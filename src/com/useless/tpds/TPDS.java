@@ -29,7 +29,7 @@ public class TPDS extends TabActivity {
 	    spec = tabHost.newTabSpec("status").setIndicator("Status",
 	                      res.getDrawable(R.drawable.ic_tab_status))
 	                  .setContent(intent);
-	    tabHost.addTab(spec); 
+	    tabHost.addTab(spec);
 
 	    // Do the same for the other tabs
 	    intent = new Intent().setClass(this, Send.class);
