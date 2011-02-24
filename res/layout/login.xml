@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/layout_login"
+	android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1"
+    android:padding="10dp">
+    
+    <TableRow>
+    	<ImageView android:id="@+id/imageLogo" 
+		    android:layout_height="100dp"  
+		    android:layout_width="100dp"
+		    android:layout_span="2"
+		    android:src="@drawable/logo"
+		    android:layout_marginBottom = "10dp" />
+    </TableRow>
+    
+    <TableRow>
+    	<TextView android:id="@+id/textViewUsername"
+    		android:text="@string/username" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp"
+    		android:layout_span="2" />
+    </TableRow>
+    
+    <TableRow>
+        <EditText android:id="@+id/editTextUsername"
+        	android:text=""  
+        	android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content"
+        	android:layout_span="2" 
+        	android:autoText="false"/>
+    </TableRow>
+    
+    <TableRow>
+    	<TextView android:id="@+id/textViewPassword"
+    		android:text="@string/password" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp"
+    		android:layout_span="2" />
+    </TableRow>
+    
+    <TableRow>
+        <EditText android:id="@+id/editTextPassword"
+        	android:text=""
+        	android:password = "true"
+        	android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content"
+        	android:layout_span="2" />
+    </TableRow>
+    
+    <TableRow android:id="@+id/rowAlert"
+    	android:layout_marginBottom = "10dp"
+    	android:padding="5dp"
+    	android:visibility="gone">
+    	<ImageView android:id="@+id/imageAlert" 
+		    android:layout_height="wrap_content"  
+		    android:layout_width="wrap_content"
+		    android:src="@drawable/alert"
+		    android:layout_marginRight = "4dp" />
+    	<TextView android:id="@+id/textViewAlert"
+    		android:text="" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="wrap_content"
+    		android:textStyle="bold" />
+    </TableRow>
+    
+    <TableRow>
+        <CheckBox android:id="@+id/savePassword"
+        	android:text="@string/login_remember"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_span="2" />
+    </TableRow>
+
+    <TableRow>
+        <Button android:id="@+id/buttonLogin" 
+        	android:text="@string/login"
+        	android:layout_height="wrap_content"
+        	android:layout_width="fill_parent" 
+        	android:layout_marginTop="10dp"
+        	android:layout_span="2" />
+    </TableRow>
+    
+    <View android:layout_height="1dip"
+        android:background="#FF909090"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+    
+    <TableRow>
+    	<Button android:id="@+id/buttonRegister" 
+        	android:text="@string/register"
+        	android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content"
+        	android:layout_span="2" />
+    </TableRow>
+    
+</TableLayout>

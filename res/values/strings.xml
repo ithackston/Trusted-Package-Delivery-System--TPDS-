@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, tpds!</string>
+    <string name="app_name">Trusted Package Delivery System</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="register">Register a New Account</string>
+    <string name="login">Login</string>
+    <string name="login_instructions">You must log in to continue.</string>
+    <string name="login_invalid">Username or password incorrect.</string>
+    <string name="login_progress">Logging in, please wait...</string>
+    <string name="login_remember">Remember me.</string>
+    <string name="realname">Real Name</string>
+    <string name="password_confirm">Confirm Password</string>
+    <string name="register_login">Register and Login</string>
+    <string name="register_nomatch">Your passwords do not match.</string>
+    <string name="register_error_generic">Unable to register user. Please try a different username and password combination.</string>
+    <string name="register_tooshort">Password not long enough (minimum 6 characters).</string>
+    <string name="login_existing">Login with Existing Account</string>
+    <string name="register_app">Register</string>
+    <string name="login_app">Login</string>
+    <string name="prefs_filename">TPDSPreferences</string>
+    <string name="friends_app">Friends</string>
+    <string name="status_app">Status</string>
+    <string name="send_app">Send</string>
+    <string name="greeting">Welcome to TPDS, </string>
+    <string name="logout">Logout</string>
+    <string name="settings_app">Settings</string>
+</resources>
