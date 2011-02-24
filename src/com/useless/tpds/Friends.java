@@ -1,10 +1,9 @@
 package com.useless.tpds;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class Friends extends Activity {
+public class Friends extends UserTab {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

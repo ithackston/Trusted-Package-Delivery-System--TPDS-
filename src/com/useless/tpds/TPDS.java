@@ -24,6 +24,9 @@ public class TPDS extends TabActivity {
 
 	    // Create an Intent to launch an Activity for the tab (to be reused)
 	    intent = new Intent().setClass(this, Status.class);
+	    
+	    // Add user information bundle to intent
+	    intent.putExtras(activeUser);
 
 	    // Initialize a TabSpec for each tab and add it to the TabHost
 	    spec = tabHost.newTabSpec("status").setIndicator("Status",
@@ -33,18 +36,21 @@ public class TPDS extends TabActivity {
 
 	    // Do the same for the other tabs
 	    intent = new Intent().setClass(this, Send.class);
+	    intent.putExtras(activeUser);
 	    spec = tabHost.newTabSpec("send").setIndicator("Send",
 	                      res.getDrawable(R.drawable.ic_tab_send))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 
 	    intent = new Intent().setClass(this, Friends.class);
+	    intent.putExtras(activeUser);
 	    spec = tabHost.newTabSpec("friends").setIndicator("Friends",
 	                      res.getDrawable(R.drawable.ic_tab_friends))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 	    
 	    intent = new Intent().setClass(this, Settings.class);
+	    intent.putExtras(activeUser);
 	    spec = tabHost.newTabSpec("settings").setIndicator("Settings",
 	                      res.getDrawable(R.drawable.ic_tab_settings))
 	                  .setContent(intent);

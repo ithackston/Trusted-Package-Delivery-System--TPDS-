@@ -1,15 +1,16 @@
 package com.useless.tpds;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class Settings extends Activity {
+public class Settings extends UserTab {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
         TextView textview = new TextView(this);
-        textview.setText("This is the settings tab.");
+        String msg = "Hello " + activeUser.getString("realname") + "! ";
+        msg += " Your token is: " + activeUser.getString("token");
+        textview.setText(msg);
         setContentView(textview);
     }
 }
