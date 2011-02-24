@@ -98,6 +98,7 @@ public class Register extends UserAuth implements OnClickListener {
 						storeToken();
 			        }
 					
+					activeUser = buildBundle(result);
 					setResult(LOGIN_SUCCESSFUL,new Intent().putExtras(activeUser));
 					finish();
 				}
