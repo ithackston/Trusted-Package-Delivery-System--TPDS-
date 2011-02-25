@@ -1,9 +1,10 @@
 package com.useless.tpds;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class Send extends UserTab {
+public class Send extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
