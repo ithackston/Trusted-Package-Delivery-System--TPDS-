@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,6 +52,37 @@ public class Database {
                 InputStream instream = entity.getContent();
                 String result= streamToString(instream);
                 json = new JSONObject(result);
+                instream.close();
+            }
+ 
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return json;
+    }
+    
+    public static JSONArray getArray(String url) {
+    	JSONArray json = null;
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpGet httpget = new HttpGet(url);
+        HttpResponse response;
+        
+        try {
+            response = httpclient.execute(httpget);
+            HttpEntity entity = response.getEntity();
+ 
+            if (entity != null) {
+                InputStream instream = entity.getContent();
+                String result= streamToString(instream);
+                json = new JSONArray(result);
                 instream.close();
             }
  

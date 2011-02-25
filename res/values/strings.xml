@@ -28,4 +28,5 @@
     <string name="settings_app">Settings</string>
     <string name="currtoken">Current Token</string>
     <string name="menu_app">Menu</string>
+    <string name="friends_empty">It appears you have no friends :(</string>
 </resources>
