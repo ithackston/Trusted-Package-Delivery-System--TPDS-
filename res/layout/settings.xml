@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/layout_settings"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dp">
+    
+    <TableLayout android:id="@+id/user_info"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content">
+    	
+    	<TableRow>
+    		<TextView android:id="@+id/labelRealname"
+    			android:text="@string/realname" 
+    			android:layout_width="100dp" />
+    		<TextView android:id="@+id/fieldRealname"
+    			android:text="" />
+    	</TableRow>
+    	
+    	<TableRow>
+    		<TextView android:id="@+id/labelUsername"
+    			android:text="@string/username" 
+    			android:layout_width="100dp" />
+    		<TextView android:id="@+id/fieldUsername"
+    			android:text="" />
+    	</TableRow>
+    	
+    	<View android:layout_height="1dip"
+	        android:background="#FF909090"
+	        android:layout_marginTop="10dp"
+	        android:layout_marginBottom="10dp" />
+	        
+	    <Button android:id="@+id/buttonLogout" 
+        	android:text="@string/logout"
+        	android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content" />
+    	
+    </TableLayout>
+    
+    
+    
+   	
+    
+</LinearLayout>

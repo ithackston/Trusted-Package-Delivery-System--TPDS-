@@ -93,12 +93,13 @@ public class Register extends UserAuth implements OnClickListener {
 					editTextPassword2.setText("");
 					editTextUsername.requestFocus();
 				} else if(result.has("token")) {//token obtained, login successful
+					activeUser = buildBundle(result);
+					
 					//save token for future use
 					if(savePassword.isChecked()) {
 						storeToken();
 			        }
 					
-					activeUser = buildBundle(result);
 					setResult(LOGIN_SUCCESSFUL,new Intent().putExtras(activeUser));
 					finish();
 				}

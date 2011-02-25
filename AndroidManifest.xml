@@ -9,8 +9,7 @@
 
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 		<activity android:name=".TPDS"
-			android:label="@string/app_name"
-			android:theme="@android:style/Theme.NoTitleBar">
+			android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -27,6 +26,10 @@
 			android:icon="@drawable/add_user"
 			android:theme="@style/TitleWithIcon" />
 			
+		<activity android:name=".Menu"
+			android:label="@string/menu_app" 
+			android:theme="@android:style/Theme.NoTitleBar" />
+		
 		<activity android:name=".Status"
 			android:label="@string/status_app" />
 		

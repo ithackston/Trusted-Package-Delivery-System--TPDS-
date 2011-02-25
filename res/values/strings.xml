@@ -26,4 +26,6 @@
     <string name="greeting">Welcome to TPDS, </string>
     <string name="logout">Logout</string>
     <string name="settings_app">Settings</string>
+    <string name="currtoken">Current Token</string>
+    <string name="menu_app">Menu</string>
 </resources>

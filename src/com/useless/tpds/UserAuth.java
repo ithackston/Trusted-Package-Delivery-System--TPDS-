@@ -34,19 +34,15 @@ public abstract class UserAuth extends Activity {
 		textAlert.setText(msg);
 	}
 	
-	protected boolean storeToken() {
+	protected void storeToken() {
 		//save token
-		SharedPreferences settings = getSharedPreferences(getString(R.string.prefs_filename),0);
-		SharedPreferences.Editor editor = settings.edit();
-		try {
-			editor.putString("savedToken", activeUser.getString("token"));
-		} catch(Exception e) {
-			return false;
-		}
-		return true;
+		SharedPreferences prefs = getSharedPreferences(getString(R.string.prefs_filename),0);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString("savedToken", activeUser.getString("token"));
+		editor.commit();
 	}
 	
-	protected Bundle buildBundle(JSONObject o) {
+	public static Bundle buildBundle(JSONObject o) {
 		Bundle b = new Bundle();
 		if(o != null) {
 			@SuppressWarnings("rawtypes")
