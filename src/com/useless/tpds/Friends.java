@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class Friends extends ListActivity {
@@ -74,6 +75,12 @@ public class Friends extends ListActivity {
         Thread thread =  new Thread(null, viewFriends, "TPDSFriend");
         thread.start();
         progressDialog = ProgressDialog.show(this, "Please wait...", "Retrieving data ...", true);
+    }
+    
+    @Override
+    protected void onListItemClick(ListView lv, View v, int position, long id) {
+    	Bundle item = (Bundle) lv.getItemAtPosition(position);
+    	//TODO pass bundle to FriendsEdit dialog
     }
     
     private Runnable returnRes = new Runnable() {

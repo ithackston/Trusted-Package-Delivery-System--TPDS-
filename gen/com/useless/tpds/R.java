@@ -115,6 +115,7 @@ public final class R {
         public static final int settings_app=0x7f040019;
         public static final int status_app=0x7f040015;
         public static final int username=0x7f040002;
+        public static final int waiting_for_data=0x7f04001d;
     }
     public static final class style {
         public static final int CustomWindowTitleBackground=0x7f050000;
