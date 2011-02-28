@@ -18,52 +18,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class Friends extends ListActivity {
-	private ProgressDialog progressDialog;
+	private ProgressDialog progressDialog = null;
     private ArrayList<Bundle> friendsList = null;
     private FriendsAdapter adapter;
     private Runnable viewFriends;
     private Bundle activeUser;
     private int numFriends;
 	
-	private class FriendsAdapter extends ArrayAdapter<Bundle> {
-		private ArrayList<Bundle> items;
-	
-		public FriendsAdapter(Context context, int textViewResourceId, ArrayList<Bundle> items) {
-			super(context, textViewResourceId, items);
-			this.items = items;
-		}
-		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = convertView;
-			if (v == null) {
-				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(R.layout.friends_item, null);
-			}
-			Bundle friend = items.get(position);
-			if (friend != null) {
-				boolean trusted = friend.getString("trusted").equals("1");
-				boolean deliverable = friend.getString("deliverable").equals("1");
-				ImageView imgTrusted = (ImageView) v.findViewById(R.id.trusted);
-				ImageView imgDeliverable = (ImageView) v.findViewById(R.id.deliverable);
-				
-				TextView realname = (TextView) v.findViewById(R.id.realname);
-				TextView username = (TextView) v.findViewById(R.id.username);
-				realname.setText(friend.getString("realname"));
-				username.setText(friend.getString("username"));
-				
-				if(!trusted) {
-					imgTrusted.setImageResource(R.drawable.blank);
-				}
-				if(!deliverable) {
-					imgDeliverable.setImageResource(R.drawable.blank);
-				}
-			}
-			return v;
-		}
-	}
-	
 	private void getFriends(){
+		friendsList = new ArrayList<Bundle>();
+		
 		String requestUrl = "http://snarti.nu/?data=friends&action=get";
 		requestUrl += "&token=" + activeUser.getString("token");
 		JSONArray result = Database.getArray(requestUrl);
@@ -87,19 +51,7 @@ public class Friends extends ListActivity {
 		runOnUiThread(returnRes);
 	}
 	
-	private Runnable returnRes = new Runnable() {
-        @Override
-        public void run() {
-	    	if(friendsList != null && friendsList.size() > 0){
-	    		adapter.notifyDataSetChanged();
-	            for(int i = 0; i < numFriends; i++)
-	            	adapter.add(friendsList.get(i));
-	        }
-	    	progressDialog.dismiss();
-	    	adapter.notifyDataSetChanged();
-        }
-    };
-	
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
@@ -123,4 +75,60 @@ public class Friends extends ListActivity {
         thread.start();
         progressDialog = ProgressDialog.show(this, "Please wait...", "Retrieving data ...", true);
     }
+    
+    private Runnable returnRes = new Runnable() {
+        @Override
+        public void run() {
+	    	if(friendsList != null && friendsList.size() > 0){
+	    		adapter.notifyDataSetChanged();
+	            for(int i = 0; i < numFriends; i++)
+	            	adapter.add(friendsList.get(i));
+	        }
+	    	progressDialog.dismiss();
+	    	adapter.notifyDataSetChanged();
+        }
+    };
+    
+    private class FriendsAdapter extends ArrayAdapter<Bundle> {
+		private ArrayList<Bundle> items;
+	
+		public FriendsAdapter(Context context, int textViewResourceId, ArrayList<Bundle> items) {
+			super(context, textViewResourceId, items);
+			this.items = items;
+		}
+		
+		@Override
+		public View getView(int position, View v, ViewGroup parent) {
+			Bundle friend = null;
+			
+			if (v == null) {
+				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = vi.inflate(R.layout.friends_item, null);
+			}
+			
+			if(position < numFriends) {
+				friend = items.get(position);
+			}
+			
+			if (friend != null) {
+				boolean trusted = friend.getString("trusted").equals("1");
+				boolean deliverable = friend.getString("deliverable").equals("1");
+				ImageView imgTrusted = (ImageView) v.findViewById(R.id.trusted);
+				ImageView imgDeliverable = (ImageView) v.findViewById(R.id.deliverable);
+				
+				TextView realname = (TextView) v.findViewById(R.id.realname);
+				TextView username = (TextView) v.findViewById(R.id.username);
+				realname.setText(friend.getString("realname"));
+				username.setText(friend.getString("username"));
+				
+				if(!trusted) {
+					imgTrusted.setImageResource(R.drawable.blank);
+				}
+				if(!deliverable) {
+					imgDeliverable.setImageResource(R.drawable.blank);
+				}
+			}
+			return v;
+		}
+	}
 }
