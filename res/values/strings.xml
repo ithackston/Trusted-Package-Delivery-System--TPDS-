@@ -30,4 +30,12 @@
     <string name="menu_app">Menu</string>
     <string name="friends_empty">It appears you have no friends :(</string>
     <string name="waiting_for_data">Retrieving data...</string>
+    <string name="report">Remove and Report User</string>
+    <string name="friends_list_app">Friends List</string>
+    <string name="friends_edit_app">Edit Friend</string>
+    <string name="trusted">Trust with my packages.</string>
+    <string name="deliverable">I will deliver to this person.</string>
+    <string name="save">Save</string>
+    <string name="close">Close</string>
+    <string name="back">Back</string>
 </resources>

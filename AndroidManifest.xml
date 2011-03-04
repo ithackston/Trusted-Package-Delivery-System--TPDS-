@@ -39,6 +39,12 @@
 		<activity android:name=".Friends"
 			android:label="@string/friends_app" />
 		
+		<activity android:name=".FriendsList"
+			android:label="@string/friends_list_app" />
+			
+		<activity android:name=".FriendsEdit"
+			android:label="@string/friends_edit_app" />
+		
 		<activity android:name=".Settings"
 			android:label="@string/settings_app" />
 		
