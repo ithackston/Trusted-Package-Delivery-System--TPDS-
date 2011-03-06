@@ -4,15 +4,7 @@
 	android:layout_height="wrap_content"
 	android:padding="10dp">
 	
-	<TableRow>
-		<Button android:text="@string/back"
-	        android:id="@+id/back"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:paddingLeft="20dp"
-	        android:paddingRight="20dp"
-	        android:layout_gravity="left" />
-	
+	<TableRow>	
 		<LinearLayout android:orientation="vertical"
 		    android:layout_height="wrap_content"
 		    android:layout_width="wrap_content"
@@ -71,20 +63,63 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:checked="true"
-	        android:layout_span="3" />
+	        android:layout_span="2" />
 	</TableRow>
 	
-	<View android:layout_height="1dip"
-        android:background="#FF909090"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
+	<TableLayout android:id="@+id/alert"
+		style="@style/AlertRow">
+		<TableRow android:layout_marginBottom="10dp">
+	    	<ImageView android:id="@+id/imageAlert" 
+			    android:layout_height="wrap_content"  
+			    android:layout_width="wrap_content"
+			    android:src="@drawable/alert"
+			    android:layout_marginRight = "6dp" />
+	    	<TextView android:id="@+id/textViewAlert"
+	    		android:text="@string/remove_prompt" 
+	    		android:layout_width="wrap_content" 
+	    		android:layout_height="wrap_content"
+	    		android:textStyle="bold"
+	    		android:textColor="#000000" 
+	    		android:textSize="16dp"
+	    		android:width="0dip" />
+    	</TableRow>
+    	<TableRow>
+    		<RadioGroup android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:layout_span="2">
+				<RadioButton android:id="@+id/remove_only"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/remove_only"
+				android:textColor="#000000" />
+				<RadioButton android:id="@+id/remove_report"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/remove_report"
+				android:textColor="#000000" />
+			</RadioGroup>
+    	</TableRow>
+	</TableLayout>
 	
 	<TableRow>
-		<Button android:text="@string/report"
-	        android:id="@+id/report"
+		<Button android:text="@string/save_close"
+	        android:id="@+id/save"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="10dp"
-	        android:layout_span="3" />
+	        android:layout_span="2" />
+	</TableRow>
+	
+	<TableRow>
+		<Button android:text="@string/save_close"
+	        android:id="@+id/save_disabled"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:clickable="false"
+	        android:textColor="#999999"
+	        android:visibility="gone"
+	        android:layout_span="2" />
 	</TableRow>
 </TableLayout>

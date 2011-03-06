@@ -7,4 +7,16 @@
     	<item name="android:windowTitleSize">35dip</item>
         <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
     </style>
+    
+    <style name="AlertRow">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">#FFF5AD</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:layout_margin">10dp</item>
+		<item name="android:padding">10dp</item>
+		<item name="android:stretchColumns">1</item>
+		<item name="android:visibility">gone</item>
+    </style>
+    
 </resources>

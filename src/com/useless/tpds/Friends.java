@@ -2,48 +2,154 @@ package com.useless.tpds;
 
 import java.util.ArrayList;
 
-import android.app.ActivityGroup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-class Friends extends ActivityGroup{
-	public static Friends group;
-	private ArrayList<View> history;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+public class Friends extends ListActivity implements OnDismissListener {
+	private ProgressDialog progressDialog = null;
+    private ArrayList<Bundle> friendsList = null;
+    private FriendsAdapter adapter;
+    private Runnable viewFriends;
+    private Bundle activeUser;
+    private int numFriends;
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-	      super.onCreate(savedInstanceState);
-	      this.history = new ArrayList<View>();
-	      group = this;
-	      
-	      Intent intent = getIntent();
-	      Bundle activeUser = intent.getExtras();
-	      intent = new Intent(this,FriendsList.class);
-	      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	      intent.putExtras(activeUser);
-	      
-	      View view = getLocalActivityManager().startActivity(getString(R.string.friends_list_app),intent).getDecorView();
-	      replaceView(view);
+	private void getFriends(){
+		friendsList = new ArrayList<Bundle>();
+		
+		String requestUrl = "http://snarti.nu/?data=friends&action=get";
+		requestUrl += "&token=" + activeUser.getString("token");
+		JSONArray result = Database.getArray(requestUrl);
+		
+		numFriends = 0;
+		
+		if(result != null) {
+			for (int i = 0; i < result.length(); i++) {
+				JSONObject f = null;
+				try {
+					f = result.getJSONObject(i);
+				} catch(Exception e) {
+					//no object error
+				}
+			    if(f != null && f.has("id")) {
+			    	numFriends++;
+			    	friendsList.add(UserAuth.buildBundle(f));
+			    }
+			}
+		}
+		runOnUiThread(returnRes);
 	}
 	
-	public void replaceView(View v) {
-		history.add(v);
-		setContentView(v);
+	private void refreshList() {
+		friendsList = new ArrayList<Bundle>();
+        adapter = new FriendsAdapter(this, R.layout.friends_item, friendsList);
+        setListAdapter(adapter);
+        
+		Thread thread =  new Thread(null, viewFriends, "TPDSFriend");
+        thread.start();
+        progressDialog = ProgressDialog.show(this, "Please wait...", "Retrieving data ...", true);
 	}
 	
-	public void back() {
-		if(history.size() > 0) {
-			history.remove(history.size()-1);
-			setContentView(history.get(history.size()-1));
-		}else {
-			finish();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        Intent i = getIntent();
+        activeUser = i.getExtras();
+        
+        setContentView(R.layout.friends);
+        
+        viewFriends = new Runnable(){
+            @Override
+            public void run() {
+                getFriends();
+            }
+        };
+        
+        refreshList();
+    }
+    
+    @Override
+    protected void onListItemClick(ListView lv, View v, int position, long id) {
+    	//edit friend
+    	FriendsEdit edit = new FriendsEdit(this,friendsList.get(position));
+    	edit.setOnDismissListener(this);
+    	edit.show();
+    }
+    
+    @Override
+    public void onDismiss(DialogInterface d) {
+    	refreshList();
+    }
+    
+    private Runnable returnRes = new Runnable() {
+        @Override
+        public void run() {
+	    	if(friendsList != null && friendsList.size() > 0){
+	    		adapter.notifyDataSetChanged();
+	            for(int i = 0; i < numFriends; i++)
+	            	adapter.add(friendsList.get(i));
+	        }
+	    	progressDialog.dismiss();
+	    	adapter.notifyDataSetChanged();
+        }
+    };
+    
+    private class FriendsAdapter extends ArrayAdapter<Bundle> {
+		private ArrayList<Bundle> items;
+	
+		public FriendsAdapter(Context context, int textViewResourceId, ArrayList<Bundle> items) {
+			super(context, textViewResourceId, items);
+			this.items = items;
+		}
+		
+		@Override
+		public View getView(int position, View v, ViewGroup parent) {
+			Bundle friend = null;
+			
+			if (v == null) {
+				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = vi.inflate(R.layout.friends_item, null);
+			}
+			
+			if(position < numFriends) {
+				friend = items.get(position);
+			}
+			
+			if (friend != null) {
+				boolean trusted = friend.getString("trusted").equals("1");
+				boolean deliverable = friend.getString("deliverable").equals("1");
+				ImageView imgTrusted = (ImageView) v.findViewById(R.id.trusted);
+				ImageView imgDeliverable = (ImageView) v.findViewById(R.id.deliverable);
+				
+				TextView realname = (TextView) v.findViewById(R.id.realname);
+				TextView username = (TextView) v.findViewById(R.id.username);
+				realname.setText(friend.getString("realname"));
+				username.setText(friend.getString("username"));
+				
+				if(!trusted) {
+					imgTrusted.setImageResource(R.drawable.blank);
+				}
+				if(!deliverable) {
+					imgDeliverable.setImageResource(R.drawable.blank);
+				}
+			}
+			return v;
 		}
 	}
-
-   @Override
-    public void onBackPressed() {
-    	Friends.group.back();
-        return;
-    }
-} 
+}
