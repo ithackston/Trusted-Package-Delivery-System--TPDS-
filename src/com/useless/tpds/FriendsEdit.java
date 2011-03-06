@@ -1,5 +1,7 @@
 package com.useless.tpds;
 
+import org.json.JSONObject;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,7 +16,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class FriendsEdit extends Dialog implements OnClickListener {
-    private Bundle targetUser;
+    private Bundle targetUser,activeUser;
     private Button save, saveDisabled;
     private CheckBox checkTrusted, checkDeliverable;
     private ImageView imgTrusted, imgDeliverable;
@@ -23,7 +25,7 @@ public class FriendsEdit extends Dialog implements OnClickListener {
     private TextView alertMsg,username,realname;
     private boolean trusted, deliverable;
     
-	public FriendsEdit(Context context, Bundle t) {
+	public FriendsEdit(Context context, Bundle a, Bundle t) {
 		super(context);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -31,6 +33,7 @@ public class FriendsEdit extends Dialog implements OnClickListener {
 		setContentView(R.layout.friends_edit);
 		
 		targetUser = t;
+		activeUser = a;
 		trusted = targetUser.getString("trusted").equals("1");
 		deliverable = targetUser.getString("deliverable").equals("1");
 		
@@ -52,9 +55,9 @@ public class FriendsEdit extends Dialog implements OnClickListener {
 		alertMsg.setText(context.getString(R.string.remove_prompt,realname.getText()));
 		
 		removeOnly = (RadioButton) findViewById(R.id.remove_only);
-		removeOnly.setOnClickListener(this);
+		removeOnly.setOnClickListener(radioListener);
 		removeReport = (RadioButton) findViewById(R.id.remove_report);
-		removeReport.setOnClickListener(this);
+		removeReport.setOnClickListener(radioListener);
 		
 		save = (Button) findViewById(R.id.save);
 		saveDisabled = (Button) findViewById(R.id.save_disabled);
@@ -77,38 +80,12 @@ public class FriendsEdit extends Dialog implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if(v == save) {
-			if(removeOnly.isChecked()) {
-				//TODO Remove friend from this list only
-			} else if(removeReport.isChecked()) {
-				//TODO Remove all relationships with this friend
-			} else {
-				//TODO Update friend
-			}
+			saveChanges();
 			dismiss();
 		} else if(v == checkTrusted) {
-			if(checkTrusted.isChecked()) {
-				trusted = true;
-				targetUser.putString("trusted","1");
-				imgTrusted.setImageResource(R.drawable.trusted);
-			} else {
-				trusted = false;
-				targetUser.putString("trusted","0");
-				imgTrusted.setImageResource(R.drawable.blank);
-			}
+			toggleTrust();
 		} else if(v == checkDeliverable) {
-			if(checkDeliverable.isChecked()) {
-				deliverable = true;
-				targetUser.putString("deliverable","1");
-				imgDeliverable.setImageResource(R.drawable.deliverable);
-			} else {
-				deliverable = false;
-				targetUser.putString("deliverable","0");
-				imgDeliverable.setImageResource(R.drawable.blank);
-			}
-		} else if(v == removeOnly) {
-			disableSave(false);
-		} else if(v == removeReport) {
-			disableSave(false);
+			toggleDeliverable();
 		}
 		
 		//check status
@@ -120,6 +97,74 @@ public class FriendsEdit extends Dialog implements OnClickListener {
 			//hide alert
 			alert.setVisibility(android.view.View.GONE);
 			disableSave(false);
+		}
+	}
+	
+	private View.OnClickListener radioListener = new View.OnClickListener() {
+	    public void onClick(View v) {
+	        disableSave(false);
+	    }
+	};
+	
+	private void toggleTrust() {
+		if(checkTrusted.isChecked()) {
+			trusted = true;
+			targetUser.putString("trusted","1");
+			imgTrusted.setImageResource(R.drawable.trusted);
+		} else {
+			trusted = false;
+			targetUser.putString("trusted","0");
+			imgTrusted.setImageResource(R.drawable.blank);
+		}
+	}
+	
+	private void toggleDeliverable() {
+		if(checkDeliverable.isChecked()) {
+			deliverable = true;
+			targetUser.putString("deliverable","1");
+			imgDeliverable.setImageResource(R.drawable.deliverable);
+		} else {
+			deliverable = false;
+			targetUser.putString("deliverable","0");
+			imgDeliverable.setImageResource(R.drawable.blank);
+		}
+	}
+	
+	private void saveChanges() {
+		String requestUrl = "";
+		
+		if(removeReport.isChecked()) {
+			//remove from all friends lists
+			if(!trusted && !deliverable) {
+				requestUrl = "http://snarti.nu/?data=friends&action=rem";
+				requestUrl += "&token=" + activeUser.getString("token");
+				requestUrl += "&handler=" + targetUser.getString("username");
+				Database.get(requestUrl);
+			}
+		} else {
+			/* NOTE the server application will automatically remove friend without
+			 * any permissions set (i.e. trusted = false, deliverable = false)
+			 */
+			
+			//update trust
+			if(trusted) {
+				requestUrl = "http://snarti.nu/?data=trust&action=add";
+			} else {
+				requestUrl = "http://snarti.nu/?data=trust&action=rem";
+			}
+			requestUrl += "&token=" + activeUser.getString("token");
+			requestUrl += "&handler=" + targetUser.getString("username");
+			Database.get(requestUrl);
+			
+			//update deliverable
+			if(deliverable) {
+				requestUrl = "http://snarti.nu/?data=deliverable&action=add";
+			} else {
+				requestUrl = "http://snarti.nu/?data=deliverable&action=rem";
+			}
+			requestUrl += "&token=" + activeUser.getString("token");
+			requestUrl += "&handler=" + targetUser.getString("username");
+			Database.get(requestUrl);
 		}
 	}
 	

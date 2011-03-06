@@ -87,7 +87,7 @@ public class Friends extends ListActivity implements OnDismissListener {
     @Override
     protected void onListItemClick(ListView lv, View v, int position, long id) {
     	//edit friend
-    	FriendsEdit edit = new FriendsEdit(this,friendsList.get(position));
+    	FriendsEdit edit = new FriendsEdit(this,activeUser,friendsList.get(position));
     	edit.setOnDismissListener(this);
     	edit.show();
     }
