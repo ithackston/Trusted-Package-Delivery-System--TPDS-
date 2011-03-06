@@ -15,18 +15,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.view.LayoutInflater;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class Friends extends ListActivity implements OnDismissListener {
+public class Friends extends ListActivity {
+	private Friends self = this;
 	private ProgressDialog progressDialog = null;
     private ArrayList<Bundle> friendsList = null;
     private FriendsAdapter adapter;
     private Runnable viewFriends;
     private Bundle activeUser;
+    private Button addFriend;
     private int numFriends;
 	
 	private void getFriends(){
@@ -56,13 +60,16 @@ public class Friends extends ListActivity implements OnDismissListener {
 	}
 	
 	private void refreshList() {
+		//dump the old list and adapter
 		friendsList = new ArrayList<Bundle>();
         adapter = new FriendsAdapter(this, R.layout.friends_item, friendsList);
         setListAdapter(adapter);
         
+        //update the list
+        progressDialog = ProgressDialog.show(this, "Please wait...", "Retrieving data ...", true);
 		Thread thread =  new Thread(null, viewFriends, "TPDSFriend");
         thread.start();
-        progressDialog = ProgressDialog.show(this, "Please wait...", "Retrieving data ...", true);
+        
 	}
 	
     @Override
@@ -73,6 +80,9 @@ public class Friends extends ListActivity implements OnDismissListener {
         activeUser = i.getExtras();
         
         setContentView(R.layout.friends);
+        
+        addFriend = (Button) findViewById(R.id.add_friend);
+        addFriend.setOnClickListener(clickListener);
         
         viewFriends = new Runnable(){
             @Override
@@ -88,14 +98,28 @@ public class Friends extends ListActivity implements OnDismissListener {
     protected void onListItemClick(ListView lv, View v, int position, long id) {
     	//edit friend
     	FriendsEdit edit = new FriendsEdit(this,activeUser,friendsList.get(position));
-    	edit.setOnDismissListener(this);
+    	edit.setOnDismissListener(dismissListener);
     	edit.show();
     }
     
-    @Override
-    public void onDismiss(DialogInterface d) {
-    	refreshList();
-    }
+    private OnClickListener clickListener = new OnClickListener() {
+    	@Override
+        public void onClick(View v) {
+        	if(v == addFriend) {
+        		//add friend
+        		FriendsAdd add = new FriendsAdd(self,activeUser);
+        		add.setOnDismissListener(dismissListener);
+        		add.show();
+        	}
+        }
+    };
+    private OnDismissListener dismissListener = new OnDismissListener() {
+    	@Override
+        public void onDismiss(DialogInterface d) {
+        	//when a dialog closes, refresh the list
+        	refreshList();
+        }
+    };
     
     private Runnable returnRes = new Runnable() {
         @Override

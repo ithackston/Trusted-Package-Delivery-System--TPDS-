@@ -9,14 +9,14 @@
 		    android:layout_width="wrap_content"
 		    android:layout_gravity="right">
 			<TextView android:id="@+id/realname"
-		    	android:text="Ian"
+		    	android:text=""
 		    	android:layout_width="wrap_content" 
 		    	android:layout_height="wrap_content"
 		    	android:gravity="center_vertical"
 		    	android:textSize="20dp"
 		    	android:textStyle="bold" />
 			<TextView android:id="@+id/username"
-		    	android:text="Ian"
+		    	android:text=""
 		    	android:layout_width="wrap_content" 
 		    	android:layout_height="wrap_content"
 		    	android:gravity="center_vertical"
