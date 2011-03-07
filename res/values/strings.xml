@@ -43,4 +43,6 @@
     <string name="remove_only">Remove from my friends list only.</string>
     <string name="remove_report">Remove from my friends list and report malicious activity.</string>
     <string name="user_not_found">User not found.</string>
+    <string name="gps_daemon">TPDS GPS Daemon</string>
+    <string name="location_app">Location Logger</string>
 </resources>

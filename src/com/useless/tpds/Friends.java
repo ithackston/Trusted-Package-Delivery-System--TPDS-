@@ -33,45 +33,6 @@ public class Friends extends ListActivity {
     private Button addFriend;
     private int numFriends;
 	
-	private void getFriends(){
-		friendsList = new ArrayList<Bundle>();
-		
-		String requestUrl = "http://snarti.nu/?data=friends&action=get";
-		requestUrl += "&token=" + activeUser.getString("token");
-		JSONArray result = Database.getArray(requestUrl);
-		
-		numFriends = 0;
-		
-		if(result != null) {
-			for (int i = 0; i < result.length(); i++) {
-				JSONObject f = null;
-				try {
-					f = result.getJSONObject(i);
-				} catch(Exception e) {
-					//no object error
-				}
-			    if(f != null && f.has("id")) {
-			    	numFriends++;
-			    	friendsList.add(UserAuth.buildBundle(f));
-			    }
-			}
-		}
-		runOnUiThread(returnRes);
-	}
-	
-	private void refreshList() {
-		//dump the old list and adapter
-		friendsList = new ArrayList<Bundle>();
-        adapter = new FriendsAdapter(this, R.layout.friends_item, friendsList);
-        setListAdapter(adapter);
-        
-        //update the list
-        progressDialog = ProgressDialog.show(this, "Please wait...", "Retrieving data ...", true);
-		Thread thread =  new Thread(null, viewFriends, "TPDSFriend");
-        thread.start();
-        
-	}
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +74,7 @@ public class Friends extends ListActivity {
         	}
         }
     };
+    
     private OnDismissListener dismissListener = new OnDismissListener() {
     	@Override
         public void onDismiss(DialogInterface d) {
@@ -175,5 +137,44 @@ public class Friends extends ListActivity {
 			}
 			return v;
 		}
+	}
+    
+    private void getFriends(){
+		friendsList = new ArrayList<Bundle>();
+		
+		String requestUrl = "http://snarti.nu/?data=friends&action=get";
+		requestUrl += "&token=" + activeUser.getString("token");
+		JSONArray result = Database.getArray(requestUrl);
+		
+		numFriends = 0;
+		
+		if(result != null) {
+			for (int i = 0; i < result.length(); i++) {
+				JSONObject f = null;
+				try {
+					f = result.getJSONObject(i);
+				} catch(Exception e) {
+					//no object error
+				}
+			    if(f != null && f.has("id")) {
+			    	numFriends++;
+			    	friendsList.add(UserAuth.buildBundle(f));
+			    }
+			}
+		}
+		runOnUiThread(returnRes);
+	}
+	
+	private void refreshList() {
+		//dump the old list and adapter
+		friendsList = new ArrayList<Bundle>();
+        adapter = new FriendsAdapter(this, R.layout.friends_item, friendsList);
+        setListAdapter(adapter);
+        
+        //update the list
+        progressDialog = ProgressDialog.show(this, "Please wait...", "Retrieving data ...", true);
+		Thread thread =  new Thread(null, viewFriends, "TPDSFriend");
+        thread.start();
+        
 	}
 }

@@ -109,8 +109,10 @@ public final class R {
         public static final int friends_edit_app=0x7f040020;
         public static final int friends_empty=0x7f04001c;
         public static final int friends_list_app=0x7f04001f;
+        public static final int gps_daemon=0x7f04002b;
         public static final int greeting=0x7f040017;
         public static final int hello=0x7f040000;
+        public static final int location_app=0x7f04002c;
         public static final int login=0x7f040005;
         public static final int login_app=0x7f040012;
         public static final int login_existing=0x7f040010;
