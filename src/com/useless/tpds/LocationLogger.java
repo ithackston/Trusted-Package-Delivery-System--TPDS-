@@ -27,7 +27,7 @@ public class LocationLogger extends Service implements LocationListener {
     
     private final IBinder llBinder = new LocationLoggerBinder();
     
-	public void onCreate() {
+	public void onCreate() { 
 		Criteria criteria = new Criteria();
 		mgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		bestProvider = mgr.getBestProvider(criteria, true);
@@ -91,6 +91,7 @@ public class LocationLogger extends Service implements LocationListener {
 		prefsEdit.putFloat("last_latitude", (float) location.getLatitude());
 		prefsEdit.putFloat("last_longitude", (float) location.getLongitude());
 		prefsEdit.putLong("last_time", location.getTime());
+		prefsEdit.commit();
 	}
 
 	@Override

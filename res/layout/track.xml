@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:stretchColumns="1"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:padding="10dp">
+	
+	<TableRow>
+    	<TextView android:id="@+id/textViewPid"
+    		android:text="@string/pid"
+    		android:textStyle="bold"
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp"
+    		android:layout_span="2" />
+    </TableRow>
+	
+	<TableRow>
+		<AutoCompleteTextView android:id="@+id/find_package"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:completionThreshold="1"
+			android:layout_span="2"
+			android:layout_marginBottom="10dp"
+			/>
+	</TableRow>
+	
+	<TableRow>
+		<TextView android:id="@+id/textNotFound"
+		    	android:text="@string/package_not_found"
+		    	android:layout_width="wrap_content" 
+		    	android:layout_height="wrap_content"
+		    	android:gravity="center"
+		    	android:textSize="14dp"
+		    	android:textStyle="bold"
+		    	android:textColor="#FFE02E"
+		    	android:layout_span="2" />
+	</TableRow>
+	
+	<TableRow>
+		<TextView android:id="@+id/textFrom"
+		    	android:text="@string/from"
+		    	android:layout_width="wrap_content" 
+		    	android:layout_height="fill_parent"
+		    	android:layout_marginRight="4dp"
+		    	android:gravity="center_vertical"
+		    	android:textSize="20dp"
+		    	android:textStyle="bold" />
+		
+		<LinearLayout android:orientation="vertical"
+		    android:layout_height="wrap_content"
+		    android:layout_width="wrap_content"
+		    android:paddingLeft="10dp"
+		    android:layout_gravity="left">
+			<TextView android:id="@+id/srcRealname"
+		    	android:layout_width="wrap_content" 
+		    	android:layout_height="wrap_content"
+		    	android:gravity="center_vertical"
+		    	android:textSize="20dp"
+		    	android:textStyle="bold" />
+			<TextView android:id="@+id/srcUsername"
+		    	android:text=""
+		    	android:layout_width="wrap_content" 
+		    	android:layout_height="wrap_content"
+		    	android:gravity="center_vertical"
+		    	android:textSize="16dp" />
+		</LinearLayout>
+	</TableRow>
+	
+	<TableRow>
+		<TextView android:id="@+id/textTo"
+		    	android:text="@string/to"
+		    	android:layout_width="wrap_content" 
+		    	android:layout_height="fill_parent"
+		    	android:layout_marginRight="4dp"
+		    	android:gravity="center_vertical"
+		    	android:textSize="20dp"
+		    	android:textStyle="bold" />
+		
+		<LinearLayout android:orientation="vertical"
+		    android:layout_height="wrap_content"
+		    android:layout_width="wrap_content"
+		    android:paddingLeft="10dp"
+		    android:layout_gravity="left">
+			<TextView android:id="@+id/destRealname"
+		    	android:layout_width="wrap_content" 
+		    	android:layout_height="wrap_content"
+		    	android:gravity="center_vertical"
+		    	android:textSize="20dp"
+		    	android:textStyle="bold" />
+			<TextView android:id="@+id/destUsername"
+		    	android:text=""
+		    	android:layout_width="wrap_content" 
+		    	android:layout_height="wrap_content"
+		    	android:gravity="center_vertical"
+		    	android:textSize="16dp" />
+		</LinearLayout>
+	</TableRow>
+	
+	<View android:layout_height="1dip"
+        android:background="#FF909090"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+	
+	<TableRow android:id="@+id/getEnabled"
+		android:visibility="gone">
+		<Button android:text="@string/get_package"
+	        android:id="@+id/getButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:layout_span="2" />
+	</TableRow>
+	
+	<TableRow android:id="@+id/getDisabled">
+		<Button android:text="@string/get_package"
+	        android:id="@+id/getDisabledButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:clickable="false"
+	        android:textColor="#999999"
+	        android:layout_span="2" />
+	</TableRow>
+</TableLayout>

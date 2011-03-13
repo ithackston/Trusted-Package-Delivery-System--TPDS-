@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	>
+	<TableLayout android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="#999999"
+		android:stretchColumns="1">
+		<TableRow>
+			<Button android:id="@+id/trackPackage"
+				android:text="@string/track"
+				android:layout_marginTop="4dp"
+				android:paddingLeft="20dp"
+				android:paddingRight="20dp"
+				android:paddingTop="4dp"
+				android:paddingBottom="8dp"
+				android:textSize="12dp"
+				android:gravity="left"
+				android:layout_width="wrap_content"
+				android:layout_height="30dp" />
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="left"/>
+			<Button android:id="@+id/sendPackage"
+				android:text="@string/send"
+				android:layout_marginTop="4dp"
+				android:paddingLeft="20dp"
+				android:paddingRight="20dp"
+				android:paddingTop="4dp"
+				android:paddingBottom="8dp"
+				android:textSize="12dp"
+				android:gravity="right"
+				android:layout_width="wrap_content"
+				android:layout_height="30dp" />
+		</TableRow>
+	</TableLayout>
+	
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/mapContainer"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" >
+	
+	    <com.google.android.maps.MapView
+	        android:id="@+id/mapview"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:clickable="true"
+	        android:apiKey="0Hft9ev1QC6RurzdaHipvM7FWzLmNzkSp8x1Vgw"
+	    />
+	
+	</RelativeLayout>
+</LinearLayout>

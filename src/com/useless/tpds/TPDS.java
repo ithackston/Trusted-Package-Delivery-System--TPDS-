@@ -83,6 +83,8 @@ public class TPDS extends TabActivity {
         //get stored preferences
         prefs = getSharedPreferences(getString(R.string.prefs_filename),0);
         
+        //TODO Require internet connection
+        
         //attempt to restore saved session
         if(restoreSession()) {
         	loadTabs();

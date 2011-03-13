@@ -30,7 +30,7 @@ public class FriendsAdd extends FriendsDialog {
 		getUsers();
 		
 		usernameEntry = (AutoCompleteTextView)findViewById(R.id.find_user);
-		usernameEntry.setAdapter(new ArrayAdapter<String>(context, R.layout.friends_item2, userList));
+		usernameEntry.setAdapter(new ArrayAdapter<String>(context, R.layout.simple_item, userList));
 		usernameEntry.addTextChangedListener(watcher);
 		
 		realname = (TextView) findViewById(R.id.realname);

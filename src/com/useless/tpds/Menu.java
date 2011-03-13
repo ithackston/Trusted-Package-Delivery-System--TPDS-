@@ -26,22 +26,14 @@ public class Menu extends TabActivity {
 	    activeUser = intent.getExtras();
 
 	    // Create an Intent to launch an Activity for the tab (to be reused)
-	    intent = new Intent().setClass(this, Status.class);
+	    intent = new Intent().setClass(this, Packages.class);
 	    
 	    // Add user information bundle to intent
 	    intent.putExtras(activeUser);
 
 	    // Initialize a TabSpec for each tab and add it to the TabHost
-	    spec = tabHost.newTabSpec("status").setIndicator("Status",
+	    spec = tabHost.newTabSpec("packages").setIndicator("Packages",
 	                      res.getDrawable(R.drawable.ic_tab_status))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-
-	    // Do the same for the other tabs
-	    intent = new Intent().setClass(this, Send.class);
-	    intent.putExtras(activeUser);
-	    spec = tabHost.newTabSpec("send").setIndicator("Send",
-	                      res.getDrawable(R.drawable.ic_tab_send))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 

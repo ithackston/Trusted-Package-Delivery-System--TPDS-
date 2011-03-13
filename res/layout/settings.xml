@@ -25,7 +25,34 @@
     			android:text="" />
     	</TableRow>
     	
+    	<TableRow>
+    		<TextView android:id="@+id/labelLocation"
+    			android:text="@string/last_location" 
+    			android:layout_width="100dp" />
+    		<TextView android:id="@+id/fieldLocation"
+    			android:text="" />
+    	</TableRow>
+    	
+    	<TableRow>
+    		<TextView android:id="@+id/labelToken"
+    			android:text="@string/token" 
+    			android:layout_width="100dp" />
+    		<TextView android:id="@+id/fieldToken"
+    			android:text="" />
+    	</TableRow>
+    	
     	<View android:layout_height="1dip"
+	        android:background="#FF909090"
+	        android:layout_marginTop="10dp"
+	        android:layout_marginBottom="10dp" />
+	        
+		<CheckBox android:id="@+id/savePassword"
+        	android:text="@string/login_remember_long"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_span="2" />
+		
+		<View android:layout_height="1dip"
 	        android:background="#FF909090"
 	        android:layout_marginTop="10dp"
 	        android:layout_marginBottom="10dp" />

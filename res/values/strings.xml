@@ -21,7 +21,7 @@
     <string name="login_app">Login</string>
     <string name="prefs_filename">TPDSPreferences</string>
     <string name="friends_app">Friends</string>
-    <string name="status_app">Status</string>
+    <string name="package_app">Package</string>
     <string name="send_app">Send</string>
     <string name="greeting">Welcome to TPDS, </string>
     <string name="logout">Logout</string>
@@ -45,4 +45,17 @@
     <string name="user_not_found">User not found.</string>
     <string name="gps_daemon">TPDS GPS Daemon</string>
     <string name="location_app">Location Logger</string>
+    <string name="last_location">Last Location</string>
+    <string name="login_remember_long">Remember my login information.</string>
+    <string name="token">Token</string>
+    <string name="recipient">Recipient</string>
+    <string name="use_trusted">Only allow people I trust to handle this package.</string>
+    <string name="send_package">Send Package</string>
+    <string name="pid">Package Identification Number</string>
+    <string name="get_package">Track Package</string>
+    <string name="package_not_found">Package Not Found</string>
+    <string name="to">To:</string>
+    <string name="from">From:</string>
+    <string name="track">Track</string>
+    <string name="send">Send</string>
 </resources>
