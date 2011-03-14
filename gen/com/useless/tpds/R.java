@@ -166,6 +166,8 @@ public final class R {
         public static final int menu_app=0x7f04001b;
         public static final int package_app=0x7f040015;
         public static final int package_not_found=0x7f040035;
+        public static final int package_send_app=0x7f04003b;
+        public static final int package_track_app=0x7f04003a;
         public static final int password=0x7f040003;
         public static final int password_confirm=0x7f04000b;
         public static final int pid=0x7f040033;
@@ -201,5 +203,6 @@ public final class R {
         public static final int AlertRow=0x7f050002;
         public static final int CustomWindowTitleBackground=0x7f050000;
         public static final int TitleWithIcon=0x7f050001;
+        public static final int dialogNoTitle=0x7f050003;
     }
 }

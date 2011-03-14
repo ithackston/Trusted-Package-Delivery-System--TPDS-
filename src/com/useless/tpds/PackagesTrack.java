@@ -2,7 +2,6 @@ package com.useless.tpds;
 
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -15,10 +14,11 @@ import android.widget.TextView;
 
 public class PackagesTrack extends PackagesDialog {
 	
-	public PackagesTrack(Context c, Bundle a) {
-		super(c, a);
-		
-		setContentView(R.layout.track);
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+		setContentView(R.layout.track);		
 		
 		textNotFound = (TextView) findViewById(R.id.textNotFound);
 		
@@ -39,14 +39,9 @@ public class PackagesTrack extends PackagesDialog {
 		getDataset();
 		
 		find = (AutoCompleteTextView)findViewById(R.id.find_package);
-        find.setAdapter(new ArrayAdapter<String>(context, R.layout.simple_item, dataset));
+        find.setAdapter(new ArrayAdapter<String>(getBaseContext(), R.layout.simple_item, dataset));
         find.addTextChangedListener(watcher);
 	}
-	
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        refreshInfo();
-    }
 
 	@Override
 	protected JSONObject queryDatabase(Editable s) {
@@ -59,7 +54,7 @@ public class PackagesTrack extends PackagesDialog {
 	@Override
 	protected void useData(JSONObject dbResult) {
 		try {
-			makePath(dbResult.getJSONArray("path"));
+			path = makePath(dbResult.getJSONArray("path"));
 			src = path.get(0);
 			dest = path.get(path.size() - 1);
 			pkg = UserAuth.buildBundle(dbResult.getJSONObject("package"));
@@ -86,7 +81,7 @@ public class PackagesTrack extends PackagesDialog {
 	@Override
 	public void onClick(View v) {
 		if(v == go) {
-			dismiss();
+			//TODO exit and return values
 		}
 	}
 }

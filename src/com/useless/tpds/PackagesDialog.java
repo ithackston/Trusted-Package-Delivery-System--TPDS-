@@ -6,21 +6,19 @@ import java.util.Arrays;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Dialog;
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-abstract class PackagesDialog extends Dialog implements OnClickListener {
-	protected Context context;
+abstract class PackagesDialog extends Activity implements OnClickListener {
 	protected AutoCompleteTextView find;
     protected Bundle activeUser,src,dest,pkg;
     protected ArrayList<Bundle> path;
@@ -30,14 +28,13 @@ abstract class PackagesDialog extends Dialog implements OnClickListener {
     protected TextView destUsername,destRealname,srcUsername,srcRealname,textNotFound;
     protected TableRow goDisabled,goEnabled;
     
-	public PackagesDialog(Context c, Bundle a) {
-		super(c);
-		
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		context = c;
-		activeUser = a;
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        Intent i = getIntent();
+        activeUser = i.getExtras();
+    }
 
 	@Override
 	abstract public void onClick(View v);
@@ -46,8 +43,8 @@ abstract class PackagesDialog extends Dialog implements OnClickListener {
 		return path;
 	}
 	
-	protected void makePath(JSONArray jsonpath) {
-		path = new ArrayList<Bundle>();
+	protected static ArrayList<Bundle> makePath(JSONArray jsonpath) {
+		ArrayList<Bundle> newpath = new ArrayList<Bundle>();
 		
 		if(jsonpath != null) {
 			for (int i = 0; i < jsonpath.length(); i++) {
@@ -58,10 +55,11 @@ abstract class PackagesDialog extends Dialog implements OnClickListener {
 					//no object error
 				}
 			    if(f != null && f.has("id")) {
-			    	path.add(UserAuth.buildBundle(f));
+			    	newpath.add(UserAuth.buildBundle(f));
 			    }
 			}
 		}
+		return newpath;
 	}
 	
 	protected void setDest() {

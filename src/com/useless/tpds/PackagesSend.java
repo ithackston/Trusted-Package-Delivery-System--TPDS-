@@ -2,7 +2,6 @@ package com.useless.tpds;
 
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -18,10 +17,9 @@ public class PackagesSend extends PackagesDialog {
 	private TableRow useTrusted, useTrustedDisabled;
 	private CheckBox useTrustedCheck;
 	
-	public PackagesSend(Context c, Bundle a) {
-		super(c, a);
-		
-		src = activeUser;
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.send);
 		
@@ -46,14 +44,9 @@ public class PackagesSend extends PackagesDialog {
 		getDataset();
 		
 		find = (AutoCompleteTextView)findViewById(R.id.find_user);
-        find.setAdapter(new ArrayAdapter<String>(context, R.layout.simple_item, dataset));
+        find.setAdapter(new ArrayAdapter<String>(getBaseContext(), R.layout.simple_item, dataset));
         find.addTextChangedListener(watcher);
 	}
-	
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        refreshInfo();
-    }
 
 	@Override
 	protected JSONObject queryDatabase(Editable s) {
@@ -99,7 +92,7 @@ public class PackagesSend extends PackagesDialog {
 				if(result != null){
 					if(result.has("id")) {
 						try {
-							makePath(result.getJSONArray("path"));
+							path = makePath(result.getJSONArray("path"));
 							pkg = UserAuth.buildBundle(result.getJSONObject("package"));
 						} catch(Exception e) {
 							Log.e("TPDS", e.getMessage());
@@ -109,7 +102,7 @@ public class PackagesSend extends PackagesDialog {
 					}
 				}
 			}
-			dismiss();
+			//TODO exit and return path and package
 		}
 	}
 }

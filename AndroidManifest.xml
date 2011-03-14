@@ -35,6 +35,14 @@
 		
 		<activity android:name=".Packages"
 			android:label="@string/package_app" />
+		
+		<activity android:name=".PackagesTrack"
+			android:label="@string/package_track_app"
+			android:theme="@style/dialogNoTitle" />
+			
+		<activity android:name=".PackagesSend"
+			android:label="@string/package_send_app"
+			android:theme="@style/dialogNoTitle" />
 			
 		<activity android:name=".Friends"
 			android:label="@string/friends_app" />

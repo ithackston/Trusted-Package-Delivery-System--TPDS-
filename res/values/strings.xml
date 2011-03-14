@@ -58,4 +58,6 @@
     <string name="from">From:</string>
     <string name="track">Track</string>
     <string name="send">Send</string>
+    <string name="package_track_app">Package Tracking Dialog</string>
+    <string name="package_send_app">Package Send Dialog</string>
 </resources>
