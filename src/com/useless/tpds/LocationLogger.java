@@ -19,6 +19,7 @@ public class LocationLogger extends Service implements LocationListener {
 	public static final String name = "TPDS GPS";
 	private LocationManager mgr;
     private String bestProvider;
+    private Bundle activeUser;
     
     private SharedPreferences prefs;
     private SharedPreferences.Editor prefsEdit;
@@ -62,6 +63,7 @@ public class LocationLogger extends Service implements LocationListener {
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		activeUser = intent.getExtras();
 		Log.i(name,"IBinder called.");
 		return llBinder;
 	}
@@ -80,8 +82,13 @@ public class LocationLogger extends Service implements LocationListener {
 	}
 	
 	private void logLocation(Location location) {
+		if(activeUser == null || !activeUser.containsKey("token")) {
+			return; //do nothing, for some reason there is no active user
+		}
+		
 		// post location to database
 		String requestUrl = "http://snarti.nu/?data=location&action=add";
+		requestUrl += "&token=" + activeUser.getString("token");
 		requestUrl += "&lat=" + location.getLatitude();
 		requestUrl += "&long=" + location.getLongitude();
 		Log.i(name,"Posting location: " + requestUrl);

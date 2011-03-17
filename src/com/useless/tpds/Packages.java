@@ -46,6 +46,7 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 	private List<Overlay> mapOverlay;
 	private ArrayList<Bundle> path;
 	private Bundle pkg;
+	private boolean activeUserInPath;
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,14 +113,19 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
     }
     
     private void refreshMap() {
+    	activeUser = refreshUser(activeUser);
+    	
     	// tell the map to expect a reload, clear previous markers
     	map.invalidate();
     	mapOverlay.clear();
     	
     	// no package yet, just put a marker for the current user
     	if(pkg == null) {
-    		activeUser = refreshUser(activeUser);
     		setMarker(activeUser,0,false);
+    		GeoPoint p = getLocation(activeUser);
+    		if(p != null) {
+    			mapCtl.setCenter(p);
+    		}
     		return;
     	}
     	
@@ -129,64 +135,76 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
     	requestUrl += "&pid=" + pkg.getString("id");
     	JSONObject result = Database.get(requestUrl);
     	
-    	// on successful request
-    	if(result != null && result.has("id")){
-    		try {
-    			path = PackagesDialog.makePath(result.getJSONArray("path"));
-    			pkg = UserAuth.buildBundle(result.getJSONObject("package"));
-    			
-    			if(pkg == null) {
-    				//TODO error message
-    				Log.e("TPDS","Package not found.");
-    			}
-    			if(path == null) {
-    				//TODO error message
-    				Log.e("TPDS","Path not found.");
-    			}
-    			
-				String activeId = activeUser.getString("id");
-				String handlerId = pkg.getString("handler");
-				boolean nextstop = false;
-				Bundle handler = null;
-				
-    			for(int i = 0; i < path.size(); i++) {
-    				Bundle current = path.get(i);
-					setMarker(current,i,nextstop);
-					
-					// if current node is handler, save the bundle for later
-					if(current.getString("id").equals(handlerId)) {
-						handler = current;
-					}
-					
-					// if the active user is the package handler and current node
-					if(handlerId.equals(activeId) && current.getString("id").equals(activeId)) {
-						// add the option to hand off the package to the next person
-    					nextstop = true;
-    				} else if(nextstop == true) {
-    					nextstop = false;
-    				}
-				}
-    			
-    			if(handlerId.equals(pkg.getString("recipient"))) {
-					refreshPackage("Delivered");
-					
-					// remove package from database
-					requestUrl = "http://snarti.nu/?data=package&action=rem";
-					requestUrl += "&token=" + activeUser.getString("token");
-					requestUrl += "&pid=" + pkg.getString("id");
-					Database.get(requestUrl);
-				} else if(handler != null) {
-					refreshPackage(handler.getString("realname"));
-				} else {
-					refreshPackage("");
-				}
-    			
-    			transferPackage(handlerId);
-    			
-    		} catch(Exception e) {
-    			Log.e("TPDS",e.getMessage());
+    	// unsuccessful request
+    	if(result == null || !result.has("id")) {
+    		Log.e("TPDS","Request unsuccessful: " + requestUrl);
+    		setMarker(activeUser,0,false);
+    		GeoPoint p = getLocation(activeUser);
+    		if(p != null) {
+    			mapCtl.setCenter(p);
     		}
+    		return;
     	}
+    	
+    	activeUserInPath = false;
+    	
+		try {
+			path = PackagesDialog.makePath(result.getJSONArray("path"));
+			pkg = UserAuth.buildBundle(result.getJSONObject("package"));
+			
+			if(pkg == null || path == null) {
+				Log.e("TPDS","Package and/or path not found.");
+			}
+			
+			String activeId = activeUser.getString("id");
+			String handlerId = pkg.getString("handler");
+			boolean nextstop = false;
+			Bundle handler = null;
+			
+			for(int i = 0; i < path.size(); i++) {
+				Bundle current = path.get(i);
+				setMarker(current,i,nextstop);
+				
+				// if current node is handler, save the bundle for later and set map center
+				if(current.getString("id").equals(handlerId)) {
+					handler = current;
+					GeoPoint p = getLocation(handler);
+					mapCtl.animateTo(p);
+				}
+				
+				// if the active user is the package handler and current node
+				if(handlerId.equals(activeId) && current.getString("id").equals(activeId)) {
+					// add the option to hand off the package to the next person
+					activeUserInPath = true;
+					nextstop = true;
+				} else if(nextstop == true) {
+					nextstop = false;
+				}
+			}
+			
+			if(handlerId.equals(pkg.getString("recipient"))) {
+				refreshPackage("Delivered");
+				
+				// remove package from database
+				requestUrl = "http://snarti.nu/?data=package&action=rem";
+				requestUrl += "&token=" + activeUser.getString("token");
+				requestUrl += "&pid=" + pkg.getString("id");
+				Database.get(requestUrl);
+			} else if(handler != null) {
+				refreshPackage(handler.getString("realname"));
+			} else {
+				refreshPackage("");
+			}
+			
+			transferPackage(handlerId);
+			
+		} catch(Exception e) {
+			Log.e("TPDS",e.getMessage());
+		}
+    	
+    	if(!activeUserInPath) {
+			setMarker(activeUser,0,false);
+		}
     }
     
     private Bundle refreshUser(Bundle user) {

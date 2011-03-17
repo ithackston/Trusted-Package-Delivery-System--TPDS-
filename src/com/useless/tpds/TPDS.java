@@ -95,7 +95,7 @@ public class TPDS extends TabActivity {
     }
     
     private void startLocationLogger() {
-    	bindService(new Intent(TPDS.this, LocationLogger.class), gpsService, Context.BIND_AUTO_CREATE);
+    	bindService(new Intent(TPDS.this, LocationLogger.class).putExtras(activeUser), gpsService, Context.BIND_AUTO_CREATE);
         gpsIsBound = true;
     }
     
