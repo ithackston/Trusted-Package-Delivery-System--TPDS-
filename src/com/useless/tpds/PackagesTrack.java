@@ -1,7 +1,10 @@
 package com.useless.tpds;
 
+import java.util.ArrayList;
+
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -42,6 +45,22 @@ public class PackagesTrack extends PackagesDialog {
         find.setAdapter(new ArrayAdapter<String>(getBaseContext(), R.layout.simple_item, dataset));
         find.addTextChangedListener(watcher);
 	}
+	
+	public static ArrayList<Bundle> getPath(String pathid, String token) {
+		String requestUrl = "http://snarti.nu/?data=path&action=get";
+		requestUrl += "&token=" + token;
+		requestUrl += "&pathid=" + pathid;
+		JSONObject result = Database.get(requestUrl);
+		
+		if(result != null && result.has("path")) {
+			try {
+				return makePath(result.getJSONArray("path"));
+			} catch(Exception e) {
+				Log.e("TPDS",e.getMessage());
+			}
+		}
+		return null;
+	}
 
 	@Override
 	protected JSONObject queryDatabase(Editable s) {
@@ -81,7 +100,12 @@ public class PackagesTrack extends PackagesDialog {
 	@Override
 	public void onClick(View v) {
 		if(v == go) {
-			//TODO exit and return values
+			if(pkg != null) {
+				setResult(PKG_FOUND,new Intent().putExtras(pkg));
+			} else {
+				setResult(PKG_NOT_FOUND);
+			}
+			finish();
 		}
 	}
 }

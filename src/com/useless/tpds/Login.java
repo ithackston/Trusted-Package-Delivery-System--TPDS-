@@ -68,7 +68,7 @@ public class Login extends UserAuth implements OnClickListener {
 				finish();
 			} else {//else, invalid credentials
 				//show message
-				alert(context.getString(R.string.login_invalid));
+				alert(getBaseContext().getString(R.string.login_invalid));
 				
 				//erase password, set focus
 				editTextPassword.setText("");

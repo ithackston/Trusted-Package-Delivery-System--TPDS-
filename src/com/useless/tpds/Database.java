@@ -58,12 +58,15 @@ public class Database {
         } catch (ClientProtocolException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return null;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return null;
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return null;
         }
         
         return json;

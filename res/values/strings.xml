@@ -60,4 +60,12 @@
     <string name="send">Send</string>
     <string name="package_track_app">Package Tracking Dialog</string>
     <string name="package_send_app">Package Send Dialog</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="last_time">Checked In</string>
+    <string name="handoff">Hand Off Package</string>
+    <string name="pkg">PID:</string>
+    <string name="status">Status:</string>
+    <string name="pkgs_empty">There are no packages sent by you, en route to you, or in your possesion.</string>
+    <string name="package_saved_app">Saved Packages</string>
 </resources>

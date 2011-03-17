@@ -2,6 +2,7 @@ package com.useless.tpds;
 
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -89,20 +90,22 @@ public class PackagesSend extends PackagesDialog {
 				}
 				
 				JSONObject result = Database.get(requestUrl);
-				if(result != null){
-					if(result.has("id")) {
-						try {
-							path = makePath(result.getJSONArray("path"));
-							pkg = UserAuth.buildBundle(result.getJSONObject("package"));
-						} catch(Exception e) {
-							Log.e("TPDS", e.getMessage());
-						}
-					} else {
-						Log.e("TPDS","Unable to plan path.");
+				if(result != null && result.has("id")) {
+					try {
+						pkg = UserAuth.buildBundle(result.getJSONObject("package"));
+					} catch(Exception e) {
+						Log.e("TPDS", e.getMessage());
 					}
+				} else {
+					Log.e("TPDS","Unable to plan path.");
 				}
 			}
-			//TODO exit and return path and package
+			if(pkg != null) {
+				setResult(PKG_FOUND,new Intent().putExtras(pkg));
+			} else {
+				setResult(PKG_NOT_FOUND);
+			}
+			finish();
 		}
 	}
 }

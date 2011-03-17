@@ -19,6 +19,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 abstract class PackagesDialog extends Activity implements OnClickListener {
+	public static final int PKG_NOT_FOUND = 0;
+	public static final int PKG_FOUND = 1;
 	protected AutoCompleteTextView find;
     protected Bundle activeUser,src,dest,pkg;
     protected ArrayList<Bundle> path;

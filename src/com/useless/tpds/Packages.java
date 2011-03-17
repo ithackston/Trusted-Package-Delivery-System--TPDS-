@@ -11,6 +11,8 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,13 +23,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TextView;
 
-public class Packages extends MapActivity implements OnClickListener {
+public class Packages extends MapActivity implements OnClickListener,OnDismissListener {
 	public static final int SEND_REQUEST = 0;
 	public static final int TRACK_REQUEST = 1;
+	public static final int SAVED_REQUEST = 2;
+	public static final int TAP_RADIUS = 28; //meters
 	
-	private Button buttonSend, buttonTrack;
+	private Packages self = Packages.this;
+	private ImageButton buttonSend, buttonTrack, buttonSaved, buttonReload;
+	private TextView textViewPid, textViewStatus;
+	private TableLayout pkgInfo;
 	private Bundle activeUser;
 	private MapView map;
 	private MapController mapCtl;
@@ -43,13 +52,21 @@ public class Packages extends MapActivity implements OnClickListener {
         
         setContentView(R.layout.pkg);
         
-        buttonSend = (Button) findViewById(R.id.sendPackage);
-        buttonTrack = (Button) findViewById(R.id.trackPackage);
+        buttonSend = (ImageButton) findViewById(R.id.buttonSend);
+        buttonTrack = (ImageButton) findViewById(R.id.buttonTrack);
+        buttonSaved = (ImageButton) findViewById(R.id.buttonSaved);
+        buttonReload = (ImageButton) findViewById(R.id.buttonReload);
         buttonSend.setOnClickListener(this);
         buttonTrack.setOnClickListener(this);
+        buttonSaved.setOnClickListener(this);
+        buttonReload.setOnClickListener(this);
+        
+        pkgInfo = (TableLayout) findViewById(R.id.pkgInfo);
+        textViewPid = (TextView) findViewById(R.id.textViewPid);
+        textViewStatus = (TextView) findViewById(R.id.textViewStatus);
 
         map = (MapView) findViewById(R.id.mapview);
-        map.setBuiltInZoomControls(true);
+        //map.setBuiltInZoomControls(true);
         
         mapCtl = map.getController();
         mapOverlay = map.getOverlays();
@@ -68,32 +85,94 @@ public class Packages extends MapActivity implements OnClickListener {
 			Intent i = new Intent(this,PackagesTrack.class);
 			i.putExtras(activeUser);
 	        startActivityForResult(i, TRACK_REQUEST);
+		} else if(v == buttonReload) {
+			refreshMap();
+		} else if(v == buttonSaved) {
+			Intent i = new Intent(this,PackagesSaved.class);
+			i.putExtras(activeUser);
+	        startActivityForResult(i, SAVED_REQUEST);
 		}
     }
+	
+	@Override
+	public void onDismiss(DialogInterface d) {
+		refreshMap();
+	}
     
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if(requestCode == SEND_REQUEST) {
-    		//data.getExtras();
-    	} else if(requestCode == TRACK_REQUEST) {
-    		//data.getExtras();
+    	if(resultCode == PackagesDialog.PKG_FOUND) {
+    		pkg = data.getExtras();
+    		refreshMap();
+    	} else {
+    		//TODO no path found error
     	}
     }
     
     private void refreshMap() {
+    	// tell the map to expect a reload, clear previous markers
+    	map.invalidate();
+    	mapOverlay.clear();
+    	
+    	// no package yet, just put a marker for the current user
     	if(pkg == null) {
     		activeUser = refreshUser(activeUser);
-    		setMarker(activeUser,0);
+    		setMarker(activeUser,0,false);
     		return;
     	}
+    	
+    	// build request string
     	String requestUrl = "http://snarti.nu/?data=package&action=get";
     	requestUrl += "&token=" + activeUser.getString("token");
     	requestUrl += "&pid=" + pkg.getString("id");
     	JSONObject result = Database.get(requestUrl);
     	
+    	// on successful request
     	if(result != null && result.has("id")){
     		try {
     			path = PackagesDialog.makePath(result.getJSONArray("path"));
     			pkg = UserAuth.buildBundle(result.getJSONObject("package"));
+    			
+    			if(pkg == null) {
+    				//TODO error message
+    				Log.e("TPDS","Package not found.");
+    			}
+    			if(path == null) {
+    				//TODO error message
+    				Log.e("TPDS","Path not found.");
+    			}
+    			
+				String activeId = activeUser.getString("id");
+				String handlerId = pkg.getString("handler");
+				boolean nextstop = false;
+				Bundle handler = null;
+				
+    			for(int i = 0; i < path.size(); i++) {
+					setMarker(path.get(i),i,nextstop);
+					
+					// if the current user is the package handler and current node
+					if(handlerId.equals(activeId) && path.get(i).getString("id").equals(activeId)) {
+						// add the option to hand off the package to the next person
+						handler = path.get(i);
+    					nextstop = true;
+    				} else if(nextstop == true) {
+    					nextstop = false;
+    				}
+				}
+    			
+    			if(handlerId.equals(pkg.getString("recipient"))) {
+					refreshPackage("Delivered");
+					
+					// remove package from database
+					requestUrl = "http://snarti.nu/?data=package&action=rem";
+					requestUrl += "&token=" + activeUser.getString("token");
+					requestUrl += "&pid=" + pkg.getString("id");
+					Database.get(requestUrl);
+				} else if(handler != null) {
+					refreshPackage(handler.getString("realname"));
+				}
+    			
+    			transferPackage(handlerId);
+    			
     		} catch(Exception e) {
     			Log.e("TPDS",e.getMessage());
     		}
@@ -115,6 +194,19 @@ public class Packages extends MapActivity implements OnClickListener {
     	return user;
     }
     
+    private void refreshPackage(String status) {
+    	if(pkg != null && pkg.containsKey("id")) {
+    		pkgInfo.setVisibility(android.view.View.VISIBLE);
+    		textViewPid.setText(pkg.getString("id"));
+    		
+    		if(!status.equals("")) {
+    			textViewStatus.setText(status);
+    		}
+    	} else {
+    		pkgInfo.setVisibility(android.view.View.GONE);
+    	}
+    }
+    
     private boolean removeMarker(String id) {
     	for(int i = 0; i < mapOverlay.size(); i++) {
     		DeliveryBoy b = (DeliveryBoy) mapOverlay.get(i);
@@ -126,20 +218,20 @@ public class Packages extends MapActivity implements OnClickListener {
     	return false;
     }
     
-    private void setMarker(Bundle user,int pos) {
+    private void setMarker(Bundle user,int pos,boolean nextstop) {
     	int type = DeliveryBoy.STANDARD;
     	if(path != null) {
-    		if(user == path.get(0)) {
-    			type = DeliveryBoy.SOURCE;
-    		} else if(user == path.get(path.size() - 1)) {
-    			type = DeliveryBoy.DESTINATION;
-    		}
+			if(user.getString("id").equals(path.get(0).getString("id"))) {
+				type = DeliveryBoy.SOURCE;
+			} else if(user.getString("id").equals(path.get(path.size() - 1).getString("id"))) {
+				type = DeliveryBoy.DESTINATION;
+			}
     	}
     	if(user == activeUser) {
     		type = DeliveryBoy.ACTIVEUSER;
     	}
     	removeMarker(user.getString("id"));
-    	mapOverlay.add(new DeliveryBoy(getLocation(user),type,pos,user));
+    	mapOverlay.add(new DeliveryBoy(getLocation(user),type,pos,user,nextstop));
     }
 	
 	private GeoPoint getLocation(Bundle user) {
@@ -161,22 +253,68 @@ public class Packages extends MapActivity implements OnClickListener {
         return false;
     }
     
+    private void transferPackage(String newHandler) {
+    	for(int i = 0; i < mapOverlay.size(); i++) {
+    		DeliveryBoy b = (DeliveryBoy) mapOverlay.get(i);
+    		b.takePackage();
+    		if(b.isID(newHandler)) {
+    			b.givePackage();
+    		}
+    	}
+    }
+    
 	class DeliveryBoy extends Overlay {
 		public static final int STANDARD = R.drawable.map_marker_blue;
 		public static final int ACTIVEUSER = R.drawable.map_marker_yellow;
 		public static final int SOURCE = R.drawable.map_marker_red;
 		public static final int DESTINATION = R.drawable.map_marker_green;
+		public static final int HANDLER = R.drawable.map_marker_pkg;
 		private GeoPoint point;
 		private int type;
-		private int num;
 		private Bundle user;
+		private boolean handler,nextstop;
+		private Paint black;
+		private String label;
 		
-		public DeliveryBoy(GeoPoint point, int type, int num, Bundle user) {
+		public DeliveryBoy(GeoPoint point, int type, int num, Bundle user,boolean nextstop) {
 			super();
 			this.point = point;
 			this.type = type;
-			this.num = num;
 			this.user = user;
+			this.handler = false; //this value is changed with transferPackage(userId)
+			this.nextstop = nextstop;
+			
+			black = new Paint();
+			black.setAntiAlias(true);
+			black.setTextAlign(Paint.Align.CENTER);
+			black.setTextSize(20);
+			black.setColor(android.graphics.Color.BLACK);
+			black.setStyle(Paint.Style.STROKE);
+			
+			if(num == 0) {
+				if(type == ACTIVEUSER) {
+					label = "me";
+					black.setTextSize(16);
+				} else {
+					label = "S";
+				}
+			} else if(num == path.size() - 1) {
+				label = "F";
+			} else {
+				label = String.valueOf(num);
+			}
+		}
+		
+		public void givePackage() {
+			handler = true;
+		}
+		
+		public void takePackage() {
+			handler = false;
+		}
+		
+		public boolean hasPackage() {
+			return handler;
 		}
 	
 		@Override
@@ -187,35 +325,20 @@ public class Packages extends MapActivity implements OnClickListener {
 			Point screenPoint = new Point();
 			mapView.getProjection().toPixels(point, screenPoint);
 			
-			Paint white = new Paint();
-			white.setStrokeWidth(1);
-			white.setARGB(255,255,255,255);
-			white.setStyle(Paint.Style.STROKE);
-			
-			Paint black = new Paint();
-			black.setAntiAlias(true);
-			black.setTextAlign(Paint.Align.CENTER);
-			black.setTextSize(20);
-			black.setColor(android.graphics.Color.BLACK);
-			black.setStyle(Paint.Style.STROKE);
-			
-			String label = String.valueOf(num);
-			if(num == 0) {
-				if(type == ACTIVEUSER) {
-					label = "me";
-					black.setTextSize(16);
-				} else {
-					label = "S";
-				}
-			} else if(num == path.size() - 1) {
-				label = "F";
+			// check if this is the handler
+			if(handler) {
+				type = HANDLER;
 			}
 			
 			Bitmap bmp = BitmapFactory.decodeResource(getResources(), type);
-			int width = bmp.getWidth();
-			int height = bmp.getHeight();
-			canvas.drawBitmap(bmp, (screenPoint.x - (width / 2)), (screenPoint.y - height), white);
-			canvas.drawText(label, (screenPoint.x), (screenPoint.y - (height / 2)), black);
+			int markerWidth = bmp.getWidth();
+			int markerHeight = bmp.getHeight();
+			
+			canvas.drawBitmap(bmp, (screenPoint.x - (markerWidth / 2)), (screenPoint.y - markerHeight), black);
+			
+			if(!handler) {
+				canvas.drawText(label, (screenPoint.x), (screenPoint.y - (markerHeight / 2)), black);
+			}
 		} 
 		
 		public String getName() {
@@ -226,6 +349,20 @@ public class Packages extends MapActivity implements OnClickListener {
 			if(user.getString("id").equals(id)) {
 				return true;
 			}
+			return false;
+		}
+		
+		public boolean onTap(GeoPoint p, MapView mv) {
+			GeoPointMod pMod = new GeoPointMod(p.getLatitudeE6(),p.getLongitudeE6());
+			double dist = pMod.distanceTo(point);
+			if(dist <= TAP_RADIUS) {
+				PathInfoDialog pathInfo = new PathInfoDialog(self,activeUser,this.user,pkg,this.nextstop);
+				pathInfo.setOnDismissListener(self);
+				pathInfo.show();
+	    		
+				return true;
+			}
+			
 			return false;
 		}
 	}

@@ -7,34 +7,56 @@
 	<TableLayout android:orientation="vertical"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:background="#999999"
+		android:background="#000000"
 		android:stretchColumns="1">
 		<TableRow>
-			<Button android:id="@+id/trackPackage"
-				android:text="@string/track"
-				android:layout_marginTop="4dp"
-				android:paddingLeft="20dp"
-				android:paddingRight="20dp"
-				android:paddingTop="4dp"
-				android:paddingBottom="8dp"
-				android:textSize="12dp"
-				android:gravity="left"
+			<TableLayout android:id="@+id/pkgInfo"
+				android:orientation="vertical"
 				android:layout_width="wrap_content"
-				android:layout_height="30dp" />
-			<TextView android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:gravity="left"/>
-			<Button android:id="@+id/sendPackage"
-				android:text="@string/send"
 				android:layout_marginTop="4dp"
-				android:paddingLeft="20dp"
-				android:paddingRight="20dp"
-				android:paddingTop="4dp"
-				android:paddingBottom="8dp"
-				android:textSize="12dp"
-				android:gravity="right"
+				android:gravity="left|center_vertical">
+				<TableRow>
+					<TextView android:text="@string/pkg"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginRight="10dp" />
+					<TextView android:id="@+id/textViewPid"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginRight="10dp"
+						android:textStyle="bold" />
+				</TableRow>
+				<TableRow>
+					<TextView android:text="@string/status"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginRight="10dp" />
+					<TextView android:id="@+id/textViewStatus"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginRight="10dp"
+						android:textStyle="bold" />
+				</TableRow>
+			</TableLayout>
+			<LinearLayout android:orientation="horizontal"
 				android:layout_width="wrap_content"
-				android:layout_height="30dp" />
+				android:layout_height="wrap_content"
+				android:layout_marginTop="4dp"
+				android:gravity="right">
+				<ImageButton android:id="@+id/buttonReload"
+					android:src="@drawable/ic_reload"
+					style="@style/MapMenuButton" />
+				<ImageButton android:id="@+id/buttonSaved"
+					android:src="@drawable/ic_saved"
+					style="@style/MapMenuButton" />
+				<ImageButton android:id="@+id/buttonSend"
+					android:src="@drawable/ic_send"
+					style="@style/MapMenuButton" />
+				<ImageButton android:id="@+id/buttonTrack"
+					android:src="@drawable/ic_track"
+					style="@style/MapMenuButton" />
+			</LinearLayout>
 		</TableRow>
 	</TableLayout>
 	

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/layout_login"
+	android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1"
+    android:padding="10dp">
+    
+    <TableRow>
+    	<TextView android:text="@string/realname" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp"
+    		android:layout_marginRight="20dp" />
+    	<TextView android:id="@+id/textViewRealname"
+    		android:text="Bill Gates"
+    		android:layout_width="wrap_content" 
+    		android:layout_height="wrap_content"
+    		android:textStyle="bold" />
+    </TableRow>
+    <TableRow>
+    	<TextView android:text="@string/username" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp" />
+    	<TextView android:id="@+id/textViewUsername"
+    		android:layout_width="wrap_content" 
+    		android:layout_height="wrap_content" />
+    </TableRow>
+    
+    <View android:layout_height="1dip"
+        android:background="#FF909090"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+    
+    <TableRow>
+    	<TextView android:text="@string/latitude" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp" />
+    	<TextView android:id="@+id/textViewLatitude"
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp" />
+    </TableRow>
+    <TableRow>
+    	<TextView android:text="@string/longitude" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp" />
+    	<TextView android:id="@+id/textViewLongitude"
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp" />
+    </TableRow>
+    <TableRow>
+    	<TextView android:text="@string/last_time" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp" />
+    	<TextView android:id="@+id/textViewLastTime"
+    		android:layout_width="wrap_content" 
+    		android:layout_height="20dp" />
+    </TableRow>
+    
+    <View android:layout_height="1dip"
+        android:background="#FF909090"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+    
+    <TableRow>
+    	<Button android:id="@+id/buttonHandoff" 
+        	android:text="@string/handoff"
+        	android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content"
+        	android:layout_span="2" />
+    </TableRow>
+    
+    <TableRow>
+    	<Button android:id="@+id/buttonClose" 
+        	android:text="@string/close"
+        	android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content"
+        	android:layout_span="2" />
+    </TableRow>
+    
+</TableLayout>
