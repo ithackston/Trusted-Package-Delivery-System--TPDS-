@@ -1,1 +1,19 @@
-Ain't nuttin here suh.
+TPDS - Trusted Package Delivery System
+
+Building
+	- http://developer.android.com/sdk/installing.html
+	- Create a new AVD with the target Google APIs Level 8 and a
+	  QVGA800 screen.
+	- Load the repo into your Eclipse workspace.
+	- Eclipse will probably warn you to change your Android directory.
+	- Run using your new AVD.
+
+First Use
+	- Register a user.
+	- Change to the DDMS perspective in Eclipse.
+	- Select your AVD in the Devices list.
+	- Send a latitude and longitude (within Davis for optimum affect)
+	  in decimal to the AVD with the Emulator Control window.
+	- Reload the map to get a marker.
+
+The existing users (bill,ian,kyle,sam,sean) have the password: asdfasdf

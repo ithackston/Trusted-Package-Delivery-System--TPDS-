@@ -68,4 +68,6 @@
     <string name="status">Status:</string>
     <string name="pkgs_empty">There are no packages sent by you, en route to you, or in your possesion.</string>
     <string name="package_saved_app">Saved Packages</string>
+    <string name="register_username_illegal_chars">Username must be alphanumeric.</string>
+    <string name="register_realname_illegal_chars">Real name cannot contain symbols except &quot; &quot; (space) and &quot;-&quot; (dash).</string>
 </resources>

@@ -32,6 +32,9 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 	public static final int TRACK_REQUEST = 1;
 	public static final int SAVED_REQUEST = 2;
 	public static final int TAP_RADIUS = 28; //meters
+	public static final double DEF_LATITUDE = 38.54168123571238;
+	public static final double DEF_LONGITUDE = -121.74940466880798;
+	public static final GeoPoint DEF_POINT = new GeoPoint((int)(DEF_LATITUDE * 1E6),(int)(DEF_LONGITUDE * 1E6));
 	
 	private Packages self = Packages.this;
 	private ImageButton buttonSend, buttonTrack, buttonSaved, buttonReload;
@@ -66,7 +69,7 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
         textViewStatus = (TextView) findViewById(R.id.textViewStatus);
 
         map = (MapView) findViewById(R.id.mapview);
-        //map.setBuiltInZoomControls(true);
+        map.setBuiltInZoomControls(true);
         
         mapCtl = map.getController();
         mapOverlay = map.getOverlays();
@@ -147,12 +150,17 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 				Bundle handler = null;
 				
     			for(int i = 0; i < path.size(); i++) {
-					setMarker(path.get(i),i,nextstop);
+    				Bundle current = path.get(i);
+					setMarker(current,i,nextstop);
 					
-					// if the current user is the package handler and current node
-					if(handlerId.equals(activeId) && path.get(i).getString("id").equals(activeId)) {
+					// if current node is handler, save the bundle for later
+					if(current.getString("id").equals(handlerId)) {
+						handler = current;
+					}
+					
+					// if the active user is the package handler and current node
+					if(handlerId.equals(activeId) && current.getString("id").equals(activeId)) {
 						// add the option to hand off the package to the next person
-						handler = path.get(i);
     					nextstop = true;
     				} else if(nextstop == true) {
     					nextstop = false;
@@ -169,6 +177,8 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 					Database.get(requestUrl);
 				} else if(handler != null) {
 					refreshPackage(handler.getString("realname"));
+				} else {
+					refreshPackage("");
 				}
     			
     			transferPackage(handlerId);
@@ -219,6 +229,10 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
     }
     
     private void setMarker(Bundle user,int pos,boolean nextstop) {
+    	if(user == activeUser && (!user.containsKey("latitude") || !user.containsKey("longitude"))) {
+    		mapCtl.setCenter(DEF_POINT);
+    		return;
+    	}
     	int type = DeliveryBoy.STANDARD;
     	if(path != null) {
 			if(user.getString("id").equals(path.get(0).getString("id"))) {

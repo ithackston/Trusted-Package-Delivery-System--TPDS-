@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class Database {
 	
 	private static String streamToString(InputStream is) {
@@ -45,6 +47,7 @@ public class Database {
         HttpResponse response;
         
         try {
+        	Log.i("TPDS","Requesting " + url);
             response = httpclient.execute(httpget);
             HttpEntity entity = response.getEntity();
  

@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
@@ -26,10 +24,6 @@ public class Register extends UserAuth implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.register);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.register_title);
-		
-		rowAlert = (TableRow) findViewById(R.id.rowAlert);
-		//rowAlert.setVisibility(android.view.View.GONE);
-		textAlert = (TextView) findViewById(R.id.textViewAlert);
 		
 		savePassword = (CheckBox) findViewById(R.id.savePassword);
 		
@@ -60,48 +54,56 @@ public class Register extends UserAuth implements OnClickListener {
 			
 			if(!String.valueOf(password).equals(String.valueOf(password2))) {
 				//passwords do not match
-				alert(context.getString(R.string.register_nomatch));
+				alert(getBaseContext().getString(R.string.register_nomatch));
 				editTextPassword.setText("");
 				editTextPassword2.setText("");
 				editTextPassword.requestFocus();
 				return;
 			} else if(password.length() < minPasswordLength) {
 				//password too short
-				alert(context.getString(R.string.register_tooshort));
+				alert(getBaseContext().getString(R.string.register_tooshort));
 				editTextPassword.setText("");
 				editTextPassword2.setText("");
 				editTextPassword.requestFocus();
 				return;
-			}
-			
-			//build query and get JSON
-			String requestUrl = "http://snarti.nu/?data=user&action=register";
-			requestUrl += "&user=" + String.valueOf(username);
-			requestUrl += "&password=" + md5(password);
-			requestUrl += "&realname=" + String.valueOf(realname);
-			JSONObject result = Database.get(requestUrl);
-			
-			if(result != null) {//JSON obtained
-				if(result.has("error")) {//error registering user
-					try {
-						alert(activeUser.getString("error"));
-					} catch(Exception e) {
-						alert(getString(R.string.register_error_generic));
+			} else if(!username.toString().matches("\\w+")) {
+				alert(getBaseContext().getString(R.string.register_username_illegal_chars));
+				editTextUsername.setText("");
+				editTextUsername.requestFocus();
+			} else if(!realname.toString().matches("[\\w\\ ]+")) {
+				alert(getBaseContext().getString(R.string.register_realname_illegal_chars));
+				editTextRealname.setText("");
+				editTextRealname.requestFocus();
+			} else {
+				//build query and get JSON
+				String requestUrl = "http://snarti.nu/?data=user&action=register";
+				requestUrl += "&user=" + String.valueOf(username);
+				requestUrl += "&password=" + md5(password);
+				requestUrl += "&realname=" + String.valueOf(realname).replace(" ", "%20");
+				JSONObject result = Database.get(requestUrl);
+				
+				if(result != null) {//JSON obtained
+					if(result.has("error")) {//error registering user
+						try {
+							alert(result.getString("error"));
+						} catch(Exception e) {
+							alert(getString(R.string.register_error_generic));
+						}
+						editTextUsername.setText("");
+						editTextPassword.setText("");
+						editTextPassword2.setText("");
+						editTextUsername.requestFocus();
+					} else if(result.has("token")) {//token obtained, login successful
+						activeUser = buildBundle(result);
+						
+						//save token for future use
+						if(savePassword.isChecked()) {
+							storeToken();
+				        }
+						
+						setResult(LOGIN_SUCCESSFUL,new Intent().putExtras(activeUser));
+						finish();
 					}
-					editTextUsername.setText("");
-					editTextPassword.setText("");
-					editTextPassword2.setText("");
-					editTextUsername.requestFocus();
-				} else if(result.has("token")) {//token obtained, login successful
-					activeUser = buildBundle(result);
-					
-					//save token for future use
-					if(savePassword.isChecked()) {
-						storeToken();
-			        }
-					
-					setResult(LOGIN_SUCCESSFUL,new Intent().putExtras(activeUser));
-					finish();
 				}
 			}
 		} else if(v == buttonLoginExisting) {
@@ -109,5 +111,4 @@ public class Register extends UserAuth implements OnClickListener {
 			finish();
 		}
 	}
-	
 }

@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
@@ -24,10 +22,6 @@ public class Login extends UserAuth implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.login);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.login_title);
-		
-		rowAlert = (TableRow) findViewById(R.id.rowAlert);
-		//rowAlert.setVisibility(2);
-		textAlert = (TextView) findViewById(R.id.textViewAlert);
 		
 		savePassword = (CheckBox) findViewById(R.id.savePassword);
 		

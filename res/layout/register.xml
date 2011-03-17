@@ -91,22 +91,6 @@
         	android:layout_span="2" />
     </TableRow>
     
-    <TableRow android:id="@+id/rowAlert"
-    	android:layout_marginBottom = "10dp"
-    	android:padding="5dp"
-    	android:visibility="gone">
-    	<ImageView android:id="@+id/imageAlert" 
-		    android:layout_height="wrap_content"  
-		    android:layout_width="wrap_content"
-		    android:src="@drawable/alert"
-		    android:layout_marginRight = "4dp" />
-    	<TextView android:id="@+id/textViewAlert"
-    		android:text="" 
-    		android:layout_width="wrap_content" 
-    		android:layout_height="wrap_content"
-    		android:textStyle="bold" />
-    </TableRow>
-    
     <View android:layout_height="1dip"
         android:background="#FF909090"
         android:layout_marginTop="10dp"

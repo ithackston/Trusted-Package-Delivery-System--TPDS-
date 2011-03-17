@@ -1,7 +1,9 @@
 package com.useless.tpds;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -30,8 +32,17 @@ public abstract class UserAuth extends Activity {
 	public Bundle activeUser;
 	
 	protected void alert(String msg) {
-		rowAlert.setVisibility(android.view.View.VISIBLE);
-		textAlert.setText(msg);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(msg)
+			.setCancelable(true)
+			.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+			});
+
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 	
 	protected void storeToken() {
