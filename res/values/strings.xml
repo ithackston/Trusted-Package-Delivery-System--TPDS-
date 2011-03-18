@@ -72,4 +72,5 @@
     <string name="register_realname_illegal_chars">Real name cannot contain symbols except &quot; &quot; (space) and &quot;-&quot; (dash).</string>
     <string name="error_no_internet_connection">It appears your Android device is not connected to the internet. Please reconnect and restart TPDS.</string>
     <string name="error_no_internet_connection_title">Internet Connection Required</string>
+    <string name="id">ID</string>
 </resources>

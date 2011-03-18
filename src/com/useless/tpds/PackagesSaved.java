@@ -135,9 +135,11 @@ public class PackagesSaved extends ListActivity {
 			}
 			
 			if (pkg != null) {
+				TextView id = (TextView) v.findViewById(R.id.pkgId);
 				TextView source = (TextView) v.findViewById(R.id.source);
 				TextView destination = (TextView) v.findViewById(R.id.destination);
 				try {
+					id.setText(pkg.getString("id"));
 					source.setText(pkg.getString("source"));
 					destination.setText(pkg.getString("destination"));
 				} catch(Exception e) {

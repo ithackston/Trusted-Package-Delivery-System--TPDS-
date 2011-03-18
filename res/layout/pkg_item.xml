@@ -5,6 +5,17 @@
     android:stretchColumns="1"
     android:padding="10dp">
     <TableRow>
+    	<TextView android:text="@string/id"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:layout_marginRight="10dp" />
+    	<TextView android:id="@+id/pkgId"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:layout_marginRight="10dp"
+    		android:textStyle="bold" />
+    </TableRow>
+    <TableRow>
     	<TextView android:text="@string/from"
     		android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
