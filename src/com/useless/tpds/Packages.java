@@ -136,7 +136,7 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
     	JSONObject result = Database.get(requestUrl);
     	
     	// unsuccessful request
-    	if(result == null || !result.has("id")) {
+    	if(result == null || !result.has("path") || !result.has("package")) {
     		Log.e("TPDS","Request unsuccessful: " + requestUrl);
     		setMarker(activeUser,0,false);
     		GeoPoint p = getLocation(activeUser);
@@ -152,54 +152,40 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 			path = PackagesDialog.makePath(result.getJSONArray("path"));
 			pkg = UserAuth.buildBundle(result.getJSONObject("package"));
 			
-			if(pkg == null || path == null) {
-				Log.e("TPDS","Package and/or path not found.");
-			}
-			
 			String activeId = activeUser.getString("id");
 			String handlerId = pkg.getString("handler");
-			boolean nextstop = false;
+			boolean handoff = false;
 			Bundle handler = null;
 			
 			for(int i = 0; i < path.size(); i++) {
 				Bundle current = path.get(i);
-				setMarker(current,i,nextstop);
+				setMarker(current,i,handoff);
 				
-				// if current node is handler, save the bundle for later and set map center
+				// reset hand off bit
+				if(handoff == true) {
+					handoff = false;
+				}
+				
 				if(current.getString("id").equals(handlerId)) {
+					// center map over handler
 					handler = current;
 					GeoPoint p = getLocation(handler);
 					mapCtl.animateTo(p);
-				}
-				
-				// if the active user is the package handler and current node
-				if(handlerId.equals(activeId) && current.getString("id").equals(activeId)) {
-					// add the option to hand off the package to the next person
-					activeUserInPath = true;
-					nextstop = true;
-				} else if(nextstop == true) {
-					nextstop = false;
+					
+					if(handlerId.equals(activeId)) {
+						// add hand off option to next node
+						handoff = true;
+						// don't generate another activeUser marker later on
+						activeUserInPath = true;
+					}
 				}
 			}
 			
-			if(handlerId.equals(pkg.getString("recipient"))) {
-				refreshPackage("Delivered");
-				
-				// remove package from database
-				requestUrl = "http://snarti.nu/?data=package&action=rem";
-				requestUrl += "&token=" + activeUser.getString("token");
-				requestUrl += "&pid=" + pkg.getString("id");
-				Database.get(requestUrl);
-			} else if(handler != null) {
-				refreshPackage(handler.getString("realname"));
-			} else {
-				refreshPackage("");
-			}
-			
-			transferPackage(handlerId);
+			// refresh package information
+			refreshPackage(handler);
 			
 		} catch(Exception e) {
-			Log.e("TPDS",e.getMessage());
+			Log.e("TPDS",e.toString());
 		}
     	
     	if(!activeUserInPath) {
@@ -222,14 +208,25 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
     	return user;
     }
     
-    private void refreshPackage(String status) {
+	private void refreshPackage(Bundle handler) {
     	if(pkg != null && pkg.containsKey("id")) {
     		pkgInfo.setVisibility(android.view.View.VISIBLE);
     		textViewPid.setText(pkg.getString("id"));
     		
-    		if(!status.equals("")) {
-    			textViewStatus.setText(status);
-    		}
+    		String hid = handler.getString("id");
+    		String recipient = pkg.getString("recipient");
+
+			if(hid.equals(recipient)) {
+				textViewStatus.setText("Delivered");
+				
+				// remove package from database
+				String requestUrl = "http://snarti.nu/?data=package&action=rem";
+				requestUrl += "&token=" + activeUser.getString("token");
+				requestUrl += "&pid=" + pkg.getString("id");
+				Database.get(requestUrl);
+			} else if(handler != null) {
+				textViewStatus.setText(handler.getString("realname"));
+			}
     	} else {
     		pkgInfo.setVisibility(android.view.View.GONE);
     	}
@@ -251,17 +248,25 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
     		mapCtl.setCenter(DEF_POINT);
     		return;
     	}
+    	
     	int type = DeliveryBoy.STANDARD;
+    	
     	if(path != null) {
-			if(user.getString("id").equals(path.get(0).getString("id"))) {
+    		String id = user.getString("id");
+    		
+			if(id.equals(path.get(0).getString("id"))) {
 				type = DeliveryBoy.SOURCE;
-			} else if(user.getString("id").equals(path.get(path.size() - 1).getString("id"))) {
+			} else if(id.equals(path.get(path.size() - 1).getString("id"))) {
 				type = DeliveryBoy.DESTINATION;
+			} else if(id.equals(pkg.getString("handler"))) {
+				type = DeliveryBoy.HANDLER;
 			}
     	}
+    	
     	if(user == activeUser) {
     		type = DeliveryBoy.ACTIVEUSER;
     	}
+    	
     	removeMarker(user.getString("id"));
     	mapOverlay.add(new DeliveryBoy(getLocation(user),type,pos,user,nextstop));
     }
@@ -285,16 +290,6 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
         return false;
     }
     
-    private void transferPackage(String newHandler) {
-    	for(int i = 0; i < mapOverlay.size(); i++) {
-    		DeliveryBoy b = (DeliveryBoy) mapOverlay.get(i);
-    		b.takePackage();
-    		if(b.isID(newHandler)) {
-    			b.givePackage();
-    		}
-    	}
-    }
-    
 	class DeliveryBoy extends Overlay {
 		public static final int STANDARD = R.drawable.map_marker_blue;
 		public static final int ACTIVEUSER = R.drawable.map_marker_yellow;
@@ -304,7 +299,7 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 		private GeoPoint point;
 		private int type;
 		private Bundle user;
-		private boolean handler,nextstop;
+		private boolean nextstop;
 		private Paint black;
 		private String label;
 		
@@ -313,7 +308,6 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 			this.point = point;
 			this.type = type;
 			this.user = user;
-			this.handler = false; //this value is changed with transferPackage(userId)
 			this.nextstop = nextstop;
 			
 			black = new Paint();
@@ -336,18 +330,6 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 				label = String.valueOf(num);
 			}
 		}
-		
-		public void givePackage() {
-			handler = true;
-		}
-		
-		public void takePackage() {
-			handler = false;
-		}
-		
-		public boolean hasPackage() {
-			return handler;
-		}
 	
 		@Override
 		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
@@ -357,18 +339,13 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 			Point screenPoint = new Point();
 			mapView.getProjection().toPixels(point, screenPoint);
 			
-			// check if this is the handler
-			if(handler) {
-				type = HANDLER;
-			}
-			
 			Bitmap bmp = BitmapFactory.decodeResource(getResources(), type);
 			int markerWidth = bmp.getWidth();
 			int markerHeight = bmp.getHeight();
 			
 			canvas.drawBitmap(bmp, (screenPoint.x - (markerWidth / 2)), (screenPoint.y - markerHeight), black);
 			
-			if(!handler) {
+			if(type != HANDLER) {
 				canvas.drawText(label, (screenPoint.x), (screenPoint.y - (markerHeight / 2)), black);
 			}
 		} 
