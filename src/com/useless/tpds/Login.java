@@ -2,6 +2,7 @@ package com.useless.tpds;
 
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -40,6 +41,7 @@ public class Login extends UserAuth implements OnClickListener {
 	//called when click listener triggers
 	public void onClick(View v) {
 		if(v == buttonLogin) { //login button pressed
+			ProgressDialog progress = ProgressDialog.show(this, "Please Wait", "Logging you in...", true);
 			//get values from text boxes
 			username = editTextUsername.getText();
 			password = editTextPassword.getText();
@@ -59,8 +61,10 @@ public class Login extends UserAuth implements OnClickListener {
 		        }
 				
 				setResult(LOGIN_SUCCESSFUL,new Intent().putExtras(activeUser));
+				progress.dismiss();
 				finish();
 			} else {//else, invalid credentials
+				progress.dismiss();
 				//show message
 				alert(getBaseContext().getString(R.string.login_invalid));
 				

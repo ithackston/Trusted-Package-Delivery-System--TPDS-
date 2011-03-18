@@ -2,12 +2,15 @@ package com.useless.tpds;
 
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -83,7 +86,22 @@ public class TPDS extends TabActivity {
         //get stored preferences
         prefs = getSharedPreferences(getString(R.string.prefs_filename),0);
         
-        //TODO Require internet connection
+        // require internet connection
+        if(!isOnline()) {
+        	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setTitle(getBaseContext().getString(R.string.error_no_internet_connection_title))
+    			.setMessage(getBaseContext().getString(R.string.error_no_internet_connection))
+    			.setCancelable(true)
+    			.setPositiveButton("Close TPDS", new DialogInterface.OnClickListener() {
+    		           public void onClick(DialogInterface dialog, int id) {
+    		                dialog.cancel();
+    		                finish();
+    		           }
+    			});
+
+    		AlertDialog alert = builder.create();
+    		alert.show();
+        }
         
         //attempt to restore saved session
         if(restoreSession()) {
@@ -92,6 +110,16 @@ public class TPDS extends TabActivity {
         	//ask for login
             loadLogin();
         } 
+    }
+    
+    private boolean isOnline() {
+    	 ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    	 
+    	 try { 
+    		 return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    	 } catch(Exception e) {
+    		 return false;
+    	 }
     }
     
     private void startLocationLogger() {

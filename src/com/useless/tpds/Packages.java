@@ -11,6 +11,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
@@ -50,6 +51,7 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ProgressDialog progress = ProgressDialog.show(this, "Please Wait", "Loading map...", true);
         
         Intent intent = getIntent();
         activeUser = intent.getExtras();
@@ -75,7 +77,7 @@ public class Packages extends MapActivity implements OnClickListener,OnDismissLi
         mapCtl = map.getController();
         mapOverlay = map.getOverlays();
         mapCtl.setZoom(16);
-        
+        progress.dismiss();
         refreshMap();
     }
 	

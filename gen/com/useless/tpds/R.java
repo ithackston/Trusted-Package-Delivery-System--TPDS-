@@ -162,6 +162,8 @@ public final class R {
         public static final int close=0x7f040024;
         public static final int currtoken=0x7f04001a;
         public static final int deliverable=0x7f040022;
+        public static final int error_no_internet_connection=0x7f040046;
+        public static final int error_no_internet_connection_title=0x7f040047;
         public static final int friends_app=0x7f040014;
         public static final int friends_edit_app=0x7f040020;
         public static final int friends_empty=0x7f04001c;

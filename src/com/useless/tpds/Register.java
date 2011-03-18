@@ -2,6 +2,7 @@ package com.useless.tpds;
 
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -75,6 +76,8 @@ public class Register extends UserAuth implements OnClickListener {
 				editTextRealname.setText("");
 				editTextRealname.requestFocus();
 			} else {
+				ProgressDialog progress = ProgressDialog.show(this, "Please Wait", "Registering User...", true);
+				
 				//build query and get JSON
 				String requestUrl = "http://snarti.nu/?data=user&action=register";
 				requestUrl += "&user=" + String.valueOf(username);
@@ -84,6 +87,7 @@ public class Register extends UserAuth implements OnClickListener {
 				
 				if(result != null) {//JSON obtained
 					if(result.has("error")) {//error registering user
+						progress.dismiss();
 						try {
 							alert(result.getString("error"));
 						} catch(Exception e) {
@@ -102,6 +106,7 @@ public class Register extends UserAuth implements OnClickListener {
 				        }
 						
 						setResult(LOGIN_SUCCESSFUL,new Intent().putExtras(activeUser));
+						progress.dismiss();
 						finish();
 					}
 				}
